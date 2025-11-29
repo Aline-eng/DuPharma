@@ -19,3 +19,6 @@ To develop a centralized, user‑role‑based pharmacy management system that:
 - Provides admins with full system control, user management, and report dashboards.
 - Ensures security, accuracy, and automation of daily pharmacy operations.
 - Generates analytics such as most sold medicines, daily reports, and alerts.
+## 4. Use Case Diagram
+![use case diagram](https://github.com/user-attachments/assets/6435394c-1e8d-4300-bf73-834b42bd91f0)
+
