@@ -95,19 +95,7 @@ public class SalesController : Controller
         return View(sale);
     }
 
-    public async Task<IActionResult> Details(int id)
-    {
-        var sale = await _context.Sales
-            .Include(s => s.Customer)
-            .Include(s => s.SoldByUser)
-            .Include(s => s.SaleItems)
-            .ThenInclude(si => si.Batch)
-            .ThenInclude(b => b.Medicine)
-            .FirstOrDefaultAsync(s => s.SaleId == id);
 
-        if (sale == null) return NotFound();
-        return View(sale);
-    }
 }
 
 public class CreateSaleViewModel

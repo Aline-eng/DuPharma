@@ -145,3 +145,4 @@ c:\Users\PREACHER\source\repos\DuPharma\obj\Debug\net8.0\DuPharma.pdb
 c:\Users\PREACHER\source\repos\DuPharma\obj\Debug\net8.0\DuPharma.genruntimeconfig.cache
 c:\Users\PREACHER\source\repos\DuPharma\obj\Debug\net8.0\ref\DuPharma.dll
 C:\Users\PREACHER\source\repos\DuPharma\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+C:\Users\PREACHER\source\repos\DuPharma\obj\Debug\net8.0\DuPharma.sourcelink.json

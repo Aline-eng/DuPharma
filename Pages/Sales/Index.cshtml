@@ -34,7 +34,6 @@
                             <td>$@sale.TotalAmount.ToString("F2")</td>
                             <td>@sale.PaymentMethod</td>
                             <td>
-                                <a asp-action="Details" asp-route-id="@sale.SaleId" class="btn btn-sm btn-info">Details</a>
                                 <a asp-action="Receipt" asp-route-id="@sale.SaleId" class="btn btn-sm btn-secondary">Receipt</a>
                             </td>
                         </tr>
