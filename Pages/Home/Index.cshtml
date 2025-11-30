@@ -1,0 +1,165 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Pharmacy Dashboard</h2>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <h5>Today's Sales</h5>
+                <h3>@Model.TodaySales</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <h5>Total Medicines</h5>
+                <h3>@Model.TotalMedicines</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <h5>Total Customers</h5>
+                <h3>@Model.TotalCustomers</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <h5>Low Stock Alerts</h5>
+                <h3>@Model.LowStockMedicines.Count</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Low Stock Medicines</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.LowStockMedicines.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Medicine</th>
+                                    <th>Current Stock</th>
+                                    <th>Reorder Level</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.LowStockMedicines)
+                                {
+                                    <tr>
+                                        <td>@item.MedicineName</td>
+                                        <td><span class="badge bg-warning">@item.CurrentStock</span></td>
+                                        <td>@item.ReorderLevel</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">No low stock alerts</p>
+                }
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Expiring Soon (90 days)</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.ExpiringMedicines.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Medicine</th>
+                                    <th>Batch</th>
+                                    <th>Expiry Date</th>
+                                    <th>Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.ExpiringMedicines.Take(10))
+                                {
+                                    <tr>
+                                        <td>@item.MedicineName</td>
+                                        <td>@item.BatchNumber</td>
+                                        <td>@item.ExpiryDate.ToString("dd/MM/yyyy")</td>
+                                        <td>@item.Quantity</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">No medicines expiring soon</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Top Selling Medicines (Last 30 Days)</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.TopSellingMedicines.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Medicine</th>
+                                    <th>Quantity Sold</th>
+                                    <th>Revenue</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.TopSellingMedicines)
+                                {
+                                    <tr>
+                                        <td>@item.MedicineName</td>
+                                        <td>@item.TotalQuantitySold</td>
+                                        <td>$@item.TotalRevenue.ToString("F2")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">No sales data available</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>

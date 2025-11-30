@@ -1,0 +1,70 @@
+@model List<MedicineListViewModel>
+@{
+    ViewData["Title"] = "Medicines";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Medicines</h2>
+    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+    {
+        <a asp-action="Create" class="btn btn-primary">Add New Medicine</a>
+    }
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Generic Name</th>
+                        <th>Brand Name</th>
+                        <th>Strength</th>
+                        <th>Form</th>
+                        <th>Unit</th>
+                        <th>Stock</th>
+                        <th>Reorder Level</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var medicine in Model)
+                    {
+                        <tr class="@(medicine.TotalStock <= medicine.ReorderLevel ? "table-warning" : "")">
+                            <td>@medicine.GenericName</td>
+                            <td>@medicine.BrandName</td>
+                            <td>@medicine.Strength</td>
+                            <td>@medicine.Form</td>
+                            <td>@medicine.Unit</td>
+                            <td>
+                                <span class="badge @(medicine.TotalStock <= medicine.ReorderLevel ? "bg-warning" : "bg-success")">
+                                    @medicine.TotalStock
+                                </span>
+                            </td>
+                            <td>@medicine.ReorderLevel</td>
+                            <td>
+                                <a asp-action="Batches" asp-route-id="@medicine.MedicineId" class="btn btn-sm btn-info">Batches</a>
+                                @await Html.PartialAsync("_RoleActions", medicine.MedicineId)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function addToCart(medicineId) {
+            // AJAX call to add medicine to cart
+            $.get('/api/medicines', { q: '' }, function(data) {
+                var medicine = data.find(m => m.medicineId === medicineId);
+                if (medicine) {
+                    alert('Added ' + medicine.genericName + ' to cart');
+                    // Implement cart functionality here
+                }
+            });
+        }
+    </script>
+}

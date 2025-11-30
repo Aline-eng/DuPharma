@@ -1,0 +1,75 @@
+@model Medicine
+@{
+    ViewData["Title"] = "Medicine Batches";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Batches for @Model.GenericName (@Model.BrandName)</h2>
+    <a asp-action="Index" class="btn btn-secondary">Back to Medicines</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Batch Number</th>
+                        <th>Supplier</th>
+                        <th>Expiry Date</th>
+                        <th>Quantity</th>
+                        <th>Purchase Price</th>
+                        <th>Selling Price</th>
+                        <th>Received Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var batch in Model.Batches.OrderBy(b => b.ExpiryDate))
+                    {
+                        var isExpired = batch.ExpiryDate <= DateTime.Now;
+                        var isExpiringSoon = batch.ExpiryDate <= DateTime.Now.AddDays(90) && !isExpired;
+                        var rowClass = isExpired ? "table-danger" : (isExpiringSoon ? "table-warning" : "");
+                        
+                        <tr class="@rowClass">
+                            <td>@batch.BatchNumber</td>
+                            <td>@batch.Supplier.Name</td>
+                            <td>@batch.ExpiryDate.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                <span class="badge @(batch.QuantityOnHand > 0 ? "bg-success" : "bg-secondary")">
+                                    @batch.QuantityOnHand
+                                </span>
+                            </td>
+                            <td>$@batch.PurchasePrice.ToString("F2")</td>
+                            <td>$@batch.SellingPrice.ToString("F2")</td>
+                            <td>@batch.ReceivedDate.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                @if (isExpired)
+                                {
+                                    <span class="badge bg-danger">Expired</span>
+                                }
+                                else if (isExpiringSoon)
+                                {
+                                    <span class="badge bg-warning">Expiring Soon</span>
+                                }
+                                else if (batch.QuantityOnHand == 0)
+                                {
+                                    <span class="badge bg-secondary">Out of Stock</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">Available</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        
+        @if (!Model.Batches.Any())
+        {
+            <p class="text-muted text-center">No batches found for this medicine.</p>
+        }
+    </div>
+</div>

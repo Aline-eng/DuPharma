@@ -1,0 +1,16 @@
+@model int
+
+@if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+{
+    <a asp-controller="Medicines" asp-action="Edit" asp-route-id="@Model" class="btn btn-sm btn-warning">Edit</a>
+}
+
+@if (User.IsInRole("Admin"))
+{
+    <a asp-controller="Medicines" asp-action="Delete" asp-route-id="@Model" class="btn btn-sm btn-danger">Delete</a>
+}
+
+@if (User.IsInRole("Pharmacist") || User.IsInRole("Manager") || User.IsInRole("Admin"))
+{
+    <button type="button" class="btn btn-sm btn-success" onclick="addToCart(@Model)">Dispense</button>
+}

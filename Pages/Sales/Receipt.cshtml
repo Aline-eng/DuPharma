@@ -1,0 +1,93 @@
+@model Sale
+@{
+    ViewData["Title"] = "Receipt";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h3>DuPharma</h3>
+                    <p class="mb-0">Pharmacy Management System</p>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <strong>Invoice #:</strong> @Model.InvoiceNumber<br>
+                            <strong>Date:</strong> @Model.SaleDate.ToString("dd/MM/yyyy HH:mm")<br>
+                            <strong>Cashier:</strong> @Model.SoldByUser.FullName
+                        </div>
+                        <div class="col-6 text-end">
+                            @if (Model.Customer != null)
+                            {
+                                <strong>Customer:</strong> @Model.Customer.FullName<br>
+                                <strong>Phone:</strong> @Model.Customer.Phone
+                            }
+                            else
+                            {
+                                <text><strong>Customer:</strong> Walk-in Customer</text>
+                            }
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Medicine</th>
+                                    <th>Batch</th>
+                                    <th>Qty</th>
+                                    <th>Unit Price</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.SaleItems)
+                                {
+                                    <tr>
+                                        <td>@item.Batch.Medicine.GenericName</td>
+                                        <td>@item.Batch.BatchNumber</td>
+                                        <td>@item.Quantity</td>
+                                        <td>$@item.UnitPrice.ToString("F2")</td>
+                                        <td>$@item.SubTotal.ToString("F2")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="row">
+                        <div class="col-6">
+                            <strong>Payment Method:</strong> @Model.PaymentMethod
+                        </div>
+                        <div class="col-6 text-end">
+                            <h4><strong>Total: $@Model.TotalAmount.ToString("F2")</strong></h4>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <p class="text-muted">Thank you for your business!</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-3">
+                <button onclick="window.print()" class="btn btn-primary">Print Receipt</button>
+                <a asp-action="Index" class="btn btn-secondary">Back to Sales</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @@media print {
+        .btn, .text-center:last-child {
+            display: none !important;
+        }
+    }
+</style>

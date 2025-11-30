@@ -1,0 +1,18 @@
+[
+  {
+    "ContainingType": "DuPharma.Controllers.MedicinesApiController",
+    "Method": "Search",
+    "RelativePath": "api/medicines",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "q",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  }
+]
