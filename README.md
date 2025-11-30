@@ -4,12 +4,12 @@ A comprehensive ASP.NET Core 8 MVC pharmacy management system with role-based ac
 
 ## Features
 
-- **Role-based Authentication**: Admin, Manager, Pharmacist roles
-- **Medicine Management**: CRUD operations with batch tracking
-- **Sales Management**: POS system with FEFO allocation
-- **Inventory Tracking**: Real-time stock levels and expiry alerts
-- **Dashboard**: Low stock alerts, expiring medicines, top-selling items
-- **Reports**: Sales reports and analytics
+- **Role-based Authentication**: Admin, Manager and Pharmacist roles.
+- **Medicine Management**: CRUD operations with batch tracking.
+- **Sales Management**: POS system with FEFO allocation.
+- **Inventory Tracking**: Real-time stock levels and expiry alerts.
+- **Dashboard**: Low stock alerts, expiring medicines, top-selling items.
+- **Reports**: Sales reports and analytics.
 
 ## Prerequisites
 
@@ -49,9 +49,9 @@ dotnet ef database update
 ```
 
 **Note**: The database `dupharma_db` will be automatically created in SQL Server LocalDB. The migration will create all necessary tables and seed initial data including:
-- Admin, Manager, and Pharmacist roles
+- Admin, Manager and Pharmacist roles
 - Default admin user (admin@dupharma.local / ChangeMe123!)
-- Sample branch, suppliers, medicines, and batches
+- Sample branch, suppliers, medicines and batches
 - Sample customers for testing
 
 ### 4. Run the Application
