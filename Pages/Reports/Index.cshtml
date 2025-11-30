@@ -1,0 +1,114 @@
+@model ReportsViewModel
+@{
+    ViewData["Title"] = "Reports";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Sales Reports</h2>
+    <div class="d-flex gap-2">
+        @if (Model.AllowedPeriods.Count > 1)
+        {
+            <div class="btn-group" role="group">
+                @foreach (var period in Model.AllowedPeriods)
+                {
+                    <a asp-action="Index" asp-route-period="@period" 
+                       class="btn @(Model.Period == period ? "btn-primary" : "btn-outline-primary")">
+                        @period.ToUpper()
+                    </a>
+                }
+            </div>
+        }
+        @if (Model.CanExport)
+        {
+            <a asp-action="ExportCsv" asp-route-period="@Model.Period" class="btn btn-success">
+                Export CSV
+            </a>
+        }
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5>@Model.Period.ToUpper() Sales Report</h5>
+        <small class="text-muted">
+            @{
+                var periodText = Model.Period switch
+                {
+                    "daily" => "Last 24 hours",
+                    "weekly" => "Last 7 days", 
+                    "monthly" => "Last 30 days",
+                    _ => "Period"
+                };
+            }
+            Showing data for: @periodText
+        </small>
+    </div>
+    <div class="card-body">
+        @if (Model.ReportData.Any())
+        {
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <div class="dashboard-card">
+                        <h5>Total Sales</h5>
+                        <h3>@Model.ReportData.Count</h3>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="dashboard-card">
+                        <h5>Total Revenue</h5>
+                        <h3>$@Model.ReportData.Sum(r => r.Total).ToString("F2")</h3>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="dashboard-card">
+                        <h5>Items Sold</h5>
+                        <h3>@Model.ReportData.Sum(r => r.Quantity)</h3>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="dashboard-card">
+                        <h5>Unique Customers</h5>
+                        <h3>@Model.ReportData.Select(r => r.Customer).Distinct().Count()</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Sale ID</th>
+                            <th>Medicine</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Sold By</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.ReportData)
+                        {
+                            <tr>
+                                <td>@item.SaleId</td>
+                                <td>@item.Medicine</td>
+                                <td>@item.Quantity</td>
+                                <td>$@item.Total.ToString("F2")</td>
+                                <td>@item.Customer</td>
+                                <td>@item.Date.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>@item.SoldBy</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <h5 class="text-muted">No sales data found for the selected period</h5>
+                <p class="text-muted">Try selecting a different time period or check back later.</p>
+            </div>
+        }
+    </div>
+</div>
