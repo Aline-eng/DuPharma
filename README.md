@@ -141,7 +141,7 @@ The system automatically creates the `dupharma_db` database with the following t
 ### Business Logic
 - **FEFO Allocation**: Automatically allocates stock from batches with earliest expiry dates
 - **Transaction Safety**: All sales operations use database transactions
-- **Stock Validation**: Prevents overselling with real-time stock checks
+- **Stock Validation**: Prevents overselling with real-time stock checks 
 - **Audit Trail**: Tracks all critical operations
 
 ## API Endpoints
