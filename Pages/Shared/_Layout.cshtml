@@ -54,6 +54,14 @@
                             <span>Reports</span>
                         </a>
                     </li>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Users" asp-action="Index">
+                                <span>Users</span>
+                            </a>
+                        </li>
+                    }
                 </ul>
                 
                 <div class="sidebar-footer">

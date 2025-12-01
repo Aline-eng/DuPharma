@@ -1,0 +1,67 @@
+@model List<User>
+@{
+    ViewData["Title"] = "Users Management";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Users Management</h2>
+    <a asp-action="Create" class="btn btn-primary">Add New User</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Branch</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td>@user.FullName</td>
+                            <td>@user.Email</td>
+                            <td>@user.Phone</td>
+                            <td>@(user.Branch?.BranchName ?? "N/A")</td>
+                            <td>
+                                @switch (user.Role)
+                                {
+                                    case 1:
+                                        <span class="badge bg-danger">Admin</span>
+                                        break;
+                                    case 2:
+                                        <span class="badge bg-warning">Manager</span>
+                                        break;
+                                    case 3:
+                                        <span class="badge bg-info">Pharmacist</span>
+                                        break;
+                                }
+                            </td>
+                            <td>
+                                @if (user.IsActive)
+                                {
+                                    <span class="badge bg-success">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Inactive</span>
+                                }
+                            </td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@user.UserId" class="btn btn-sm btn-warning">Edit</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
