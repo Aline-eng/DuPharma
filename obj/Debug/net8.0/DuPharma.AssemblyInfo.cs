@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DuPharma")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1ab2443d41c6046a12b9c1f8d972a524d1dc1c8a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+70d2007789aeb4b13ac71f2f835256b17f8af232")]
 [assembly: System.Reflection.AssemblyProductAttribute("DuPharma")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DuPharma")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
