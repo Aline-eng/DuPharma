@@ -50,6 +50,10 @@
                             <thead>
                                 <tr>
                                     <th>Medicine</th>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <th>Branch</th>
+                                    }
                                     <th>Current Stock</th>
                                     <th>Reorder Level</th>
                                 </tr>
@@ -59,6 +63,10 @@
                                 {
                                     <tr>
                                         <td>@item.MedicineName</td>
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <td><span class="badge bg-info">@item.BranchName</span></td>
+                                        }
                                         <td><span class="badge bg-warning">@item.CurrentStock</span></td>
                                         <td>@item.ReorderLevel</td>
                                     </tr>

@@ -35,20 +35,40 @@ public class HomeController : Controller
     {
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         var user = await _context.Users.FindAsync(userId);
-        var branchId = user?.BranchId;
+        var isAdmin = User.IsInRole("Admin");
         
-        var query = _context.Medicines.AsQueryable();
-        
-        return await query
-            .Select(m => new LowStockAlert
-            {
-                MedicineId = m.MedicineId,
-                MedicineName = m.GenericName,
-                CurrentStock = m.Batches.Where(b => b.ExpiryDate > DateTime.Now && (branchId == null || b.BranchId == branchId)).Sum(b => b.QuantityOnHand),
-                ReorderLevel = m.ReorderLevel
-            })
-            .Where(x => x.CurrentStock <= x.ReorderLevel)
-            .ToListAsync();
+        if (isAdmin)
+        {
+            // Admin sees low stock per branch
+            return await _context.Branches
+                .SelectMany(branch => _context.Medicines
+                    .Select(m => new LowStockAlert
+                    {
+                        MedicineId = m.MedicineId,
+                        MedicineName = m.GenericName,
+                        CurrentStock = m.Batches.Where(b => b.BranchId == branch.BranchId && b.ExpiryDate > DateTime.Now).Sum(b => b.QuantityOnHand),
+                        ReorderLevel = m.ReorderLevel,
+                        BranchName = branch.BranchName
+                    })
+                    .Where(x => x.CurrentStock <= x.ReorderLevel))
+                .ToListAsync();
+        }
+        else
+        {
+            // Manager/Pharmacist sees only their branch
+            var branchId = user?.BranchId ?? 1;
+            return await _context.Medicines
+                .Select(m => new LowStockAlert
+                {
+                    MedicineId = m.MedicineId,
+                    MedicineName = m.GenericName,
+                    CurrentStock = m.Batches.Where(b => b.BranchId == branchId && b.ExpiryDate > DateTime.Now).Sum(b => b.QuantityOnHand),
+                    ReorderLevel = m.ReorderLevel,
+                    BranchName = ""
+                })
+                .Where(x => x.CurrentStock <= x.ReorderLevel)
+                .ToListAsync();
+        }
     }
 
     private async Task<List<ExpiryAlert>> GetExpiringMedicines()
@@ -137,6 +157,7 @@ public class LowStockAlert
     public string MedicineName { get; set; } = string.Empty;
     public int CurrentStock { get; set; }
     public int ReorderLevel { get; set; }
+    public string BranchName { get; set; } = string.Empty;
 }
 
 public class ExpiryAlert
