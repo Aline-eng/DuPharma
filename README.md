@@ -5,7 +5,7 @@ A comprehensive ASP.NET Core 8 MVC pharmacy management system with role-based ac
 
 ## Featurez
 
-- **Role-based Authentication**: Admin, Manager and Pharmacist roles.
+- **Role-based Authentication**: Admin, Manager and Pharmacist roles. 
 - **Medicine Management**: CRUD operations with batch tracking.
 - **Sales Management**: POS system with FEFO allocation.
 - **Inventory Tracking**: Real-time stock levels and expiry alerts.
