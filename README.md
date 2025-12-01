@@ -71,7 +71,7 @@ The application will be available at `https://localhost:5001` or `http://localho
 
 ## Database Schema
 
-The system automatically creates the `dupharma_db` database with the following tables:
+The system automatically creates the `dupharma_db` database with the following tables: 
 
 ### Core Tables
 - `Users` (Extended with FullName, BranchId) - User accounts with Identity
