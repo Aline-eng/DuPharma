@@ -53,7 +53,7 @@ dotnet ef database update
 - Admin, Manager and Pharmacist roles.
 - Default admin user (admin@dupharma.local / ChangeMe123!)
 - Sample branch, suppliers, medicines and batches.
-- Sample customers for testing
+- Sample customers for testing.
 
 ### 4. Run the Application
 
