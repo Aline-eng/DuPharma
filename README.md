@@ -91,7 +91,7 @@ The system automatically creates the `dupharma_db` database with the following t
 - `AuditLogs` - System audit trail for critical operations
 
 ### Indexes and Performance
-- Optimized indexes on ExpiryDate, MedicineId, SaleDate for fast queries
+- Optimized indexes on ExpiryDate, MedicineId and SaleDate for fast queries
 - Foreign key relationships with appropriate cascade behaviors
 - Decimal precision for monetary values (10,2)
 
