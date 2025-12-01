@@ -51,7 +51,7 @@ dotnet ef database update
 
 **Note**: The database `dupharma_db` will be automatically created in SQL Server LocalDB. The migration will create all necessary tables and seed initial data including:
 - Admin, Manager and Pharmacist roles.
-- Default admin user (admin@dupharma.local / ChangeMe123!)
+- Default admin user (admin@dupharma.local / ChangeMe123!).
 - Sample branch, suppliers, medicines and batches.
 - Sample customers for testing.
 
