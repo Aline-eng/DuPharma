@@ -7,7 +7,7 @@ A comprehensive ASP.NET Core 8 MVC pharmacy management system with role-based ac
 
 - **Role-based Authentication**: Admin, Manager and Pharmacist roles. 
 - **Medicine Management**: CRUD operations with batch tracking.
-- **Sales Management**: POS system with FEFO allocation.
+- **Sales Management**: POS system with FEFO allocation. 
 - **Inventory Tracking**: Real-time stock levels and expiry alerts.
 - **Dashboard**: Low stock alerts, expiring medicines, top-selling items.
 - **Reports**: Sales reports and analytics.
@@ -50,10 +50,10 @@ dotnet ef database update
 ```
 
 **Note**: The database `dupharma_db` will be automatically created in SQL Server LocalDB. The migration will create all necessary tables and seed initial data including:
-- Admin, Manager and Pharmacist roles
-- Default admin user (admin@dupharma.local / ChangeMe123!)
-- Sample branch, suppliers, medicines and batches
-- Sample customers for testing
+- Admin, Manager and Pharmacist roles.
+- Default admin user (admin@dupharma.local / ChangeMe123!).
+- Sample branch, suppliers, medicines and batches.
+- Sample customers for testing.
 
 ### 4. Run the Application
 
@@ -71,7 +71,7 @@ The application will be available at `https://localhost:5001` or `http://localho
 
 ## Database Schema
 
-The system automatically creates the `dupharma_db` database with the following tables:
+The system automatically creates the `dupharma_db` database with the following tables: 
 
 ### Core Tables
 - `Users` (Extended with FullName, BranchId) - User accounts with Identity
@@ -79,7 +79,7 @@ The system automatically creates the `dupharma_db` database with the following t
 - `Branches` - Pharmacy branch information
 - `Suppliers` - Medicine suppliers with contact details
 - `Medicines` - Medicine master data (generic name, brand, strength, form)
-- `Batches` - Medicine batches with expiry dates, pricing, and stock levels
+- `Batches` - Medicine batches with expiry dates, pricing and stock levels
 - `Customers` - Customer information and contact details
 
 ### Transaction Tables
@@ -91,7 +91,7 @@ The system automatically creates the `dupharma_db` database with the following t
 - `AuditLogs` - System audit trail for critical operations
 
 ### Indexes and Performance
-- Optimized indexes on ExpiryDate, MedicineId, SaleDate for fast queries
+- Optimized indexes on ExpiryDate, MedicineId and SaleDate for fast queries
 - Foreign key relationships with appropriate cascade behaviors
 - Decimal precision for monetary values (10,2)
 
@@ -141,7 +141,7 @@ The system automatically creates the `dupharma_db` database with the following t
 ### Business Logic
 - **FEFO Allocation**: Automatically allocates stock from batches with earliest expiry dates
 - **Transaction Safety**: All sales operations use database transactions
-- **Stock Validation**: Prevents overselling with real-time stock checks
+- **Stock Validation**: Prevents overselling with real-time stock checks 
 - **Audit Trail**: Tracks all critical operations
 
 ## API Endpoints
