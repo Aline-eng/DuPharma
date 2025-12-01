@@ -18,11 +18,21 @@ public class BatchesController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var batches = await _context.Batches
+        var userId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
+        var user = await _context.Users.FindAsync(userId);
+        
+        var query = _context.Batches
             .Include(b => b.Medicine)
             .Include(b => b.Supplier)
-            .OrderBy(b => b.ExpiryDate)
-            .ToListAsync();
+            .Include(b => b.Branch)
+            .AsQueryable();
+        
+        if (!User.IsInRole("Admin") && user?.BranchId != null)
+        {
+            query = query.Where(b => b.BranchId == user.BranchId);
+        }
+        
+        var batches = await query.OrderBy(b => b.ExpiryDate).ToListAsync();
         return View(batches);
     }
 
@@ -38,9 +48,14 @@ public class BatchesController : Controller
     {
         ModelState.Remove("Medicine");
         ModelState.Remove("Supplier");
+        ModelState.Remove("Branch");
         
         if (ModelState.IsValid)
         {
+            var userId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
+            var user = await _context.Users.FindAsync(userId);
+            batch.BranchId = user?.BranchId ?? 1;
+            
             _context.Batches.Add(batch);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -68,6 +83,7 @@ public class BatchesController : Controller
         
         ModelState.Remove("Medicine");
         ModelState.Remove("Supplier");
+        ModelState.Remove("Branch");
 
         if (ModelState.IsValid)
         {

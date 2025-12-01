@@ -70,6 +70,9 @@ public class ReportsController : Controller
 
     private async Task<List<ReportItem>> GetReportData(string period)
     {
+        var userId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
+        var user = await _context.Users.FindAsync(userId);
+        
         var startDate = period switch
         {
             "daily" => DateTime.Now.AddHours(-24),
@@ -78,8 +81,15 @@ public class ReportsController : Controller
             _ => DateTime.Now.AddHours(-24)
         };
 
-        return await _context.Sales
-            .Where(s => s.SaleDate >= startDate)
+        var query = _context.Sales
+            .Where(s => s.SaleDate >= startDate);
+        
+        if (!User.IsInRole("Admin") && user?.BranchId != null)
+        {
+            query = query.Where(s => s.BranchId == user.BranchId);
+        }
+
+        return await query
             .Include(s => s.SaleItems)
             .ThenInclude(si => si.Batch)
             .ThenInclude(b => b.Medicine)

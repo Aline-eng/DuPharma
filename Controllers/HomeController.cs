@@ -33,12 +33,18 @@ public class HomeController : Controller
 
     private async Task<List<LowStockAlert>> GetLowStockMedicines()
     {
-        return await _context.Medicines
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var user = await _context.Users.FindAsync(userId);
+        var branchId = user?.BranchId;
+        
+        var query = _context.Medicines.AsQueryable();
+        
+        return await query
             .Select(m => new LowStockAlert
             {
                 MedicineId = m.MedicineId,
                 MedicineName = m.GenericName,
-                CurrentStock = m.Batches.Where(b => b.ExpiryDate > DateTime.Now).Sum(b => b.QuantityOnHand),
+                CurrentStock = m.Batches.Where(b => b.ExpiryDate > DateTime.Now && (branchId == null || b.BranchId == branchId)).Sum(b => b.QuantityOnHand),
                 ReorderLevel = m.ReorderLevel
             })
             .Where(x => x.CurrentStock <= x.ReorderLevel)
@@ -47,10 +53,19 @@ public class HomeController : Controller
 
     private async Task<List<ExpiryAlert>> GetExpiringMedicines()
     {
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var user = await _context.Users.FindAsync(userId);
         var threeMonthsFromNow = DateTime.Now.AddDays(90);
         
-        return await _context.Batches
-            .Where(b => b.ExpiryDate <= threeMonthsFromNow && b.ExpiryDate > DateTime.Now && b.QuantityOnHand > 0)
+        var query = _context.Batches
+            .Where(b => b.ExpiryDate <= threeMonthsFromNow && b.ExpiryDate > DateTime.Now && b.QuantityOnHand > 0);
+        
+        if (!User.IsInRole("Admin") && user?.BranchId != null)
+        {
+            query = query.Where(b => b.BranchId == user.BranchId);
+        }
+        
+        return await query
             .Select(b => new ExpiryAlert
             {
                 BatchId = b.BatchId,
@@ -65,10 +80,19 @@ public class HomeController : Controller
 
     private async Task<List<TopSellingMedicine>> GetTopSellingMedicines()
     {
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var user = await _context.Users.FindAsync(userId);
         var thirtyDaysAgo = DateTime.Now.AddDays(-30);
         
-        return await _context.SaleItems
-            .Where(si => si.Sale.SaleDate >= thirtyDaysAgo)
+        var query = _context.SaleItems
+            .Where(si => si.Sale.SaleDate >= thirtyDaysAgo);
+        
+        if (!User.IsInRole("Admin") && user?.BranchId != null)
+        {
+            query = query.Where(si => si.Sale.BranchId == user.BranchId);
+        }
+        
+        return await query
             .GroupBy(si => new { si.Batch.Medicine.MedicineId, si.Batch.Medicine.GenericName })
             .Select(g => new TopSellingMedicine
             {
@@ -83,9 +107,17 @@ public class HomeController : Controller
 
     private async Task<int> GetTodaySalesCount()
     {
-        return await _context.Sales
-            .Where(s => s.SaleDate.Date == DateTime.Today)
-            .CountAsync();
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var user = await _context.Users.FindAsync(userId);
+        
+        var query = _context.Sales.Where(s => s.SaleDate.Date == DateTime.Today);
+        
+        if (!User.IsInRole("Admin") && user?.BranchId != null)
+        {
+            query = query.Where(s => s.BranchId == user.BranchId);
+        }
+        
+        return await query.CountAsync();
     }
 }
 

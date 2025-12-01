@@ -425,6 +425,43 @@ GO
 
 PRINT 'Database dupharma_db created successfully with all tables and sample data!';
 ```
+### Fix
+
+We realized that the app is not working based on the branch so these are the code to handles that.
+
+```sql
+USE dupharma_db;
+GO
+
+-- Add BranchId to Sales table
+ALTER TABLE [Sales] ADD [BranchId] int NULL;
+GO
+
+ALTER TABLE [Sales] ADD CONSTRAINT [FK_Sales_Branches_BranchId] 
+FOREIGN KEY ([BranchId]) REFERENCES [Branches] ([BranchId]);
+GO
+
+-- Add BranchId to Batches table
+ALTER TABLE [Batches] ADD [BranchId] int NULL;
+GO
+
+ALTER TABLE [Batches] ADD CONSTRAINT [FK_Batches_Branches_BranchId] 
+FOREIGN KEY ([BranchId]) REFERENCES [Branches] ([BranchId]);
+GO
+
+-- Update existing data to Branch 1
+UPDATE [Sales] SET [BranchId] = 1 WHERE [BranchId] IS NULL;
+UPDATE [Batches] SET [BranchId] = 1 WHERE [BranchId] IS NULL;
+GO
+
+-- Make BranchId NOT NULL
+ALTER TABLE [Sales] ALTER COLUMN [BranchId] int NOT NULL;
+ALTER TABLE [Batches] ALTER COLUMN [BranchId] int NOT NULL;
+GO
+
+PRINT 'Branch columns added successfully!';
+```
+
 
 ### Package Restore Issues
 ```bash

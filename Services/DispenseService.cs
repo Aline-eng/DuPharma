@@ -32,8 +32,11 @@ public class DispenseService
         
         try
         {
+            var user = await _context.Users.FindAsync(userId);
+            var branchId = user?.BranchId ?? 1;
+            
             // Validate stock availability
-            var stockValidation = await ValidateStockAsync(order.Items);
+            var stockValidation = await ValidateStockAsync(order.Items, branchId);
             if (!stockValidation.IsValid)
                 throw new InvalidOperationException($"Insufficient stock: {stockValidation.ErrorMessage}");
 
@@ -48,7 +51,8 @@ public class DispenseService
                 CustomerId = order.CustomerId,
                 SaleDate = DateTime.Now,
                 PaymentMethod = order.PaymentMethod,
-                TotalAmount = 0
+                TotalAmount = 0,
+                BranchId = branchId
             };
 
             _context.Sales.Add(sale);
@@ -59,7 +63,7 @@ public class DispenseService
             // Process each item using FEFO
             foreach (var item in order.Items)
             {
-                var allocations = await AllocateStockFEFO(item.MedicineId, item.Quantity);
+                var allocations = await AllocateStockFEFO(item.MedicineId, item.Quantity, branchId);
                 
                 foreach (var allocation in allocations)
                 {
@@ -112,12 +116,12 @@ public class DispenseService
         }
     }
 
-    private async Task<(bool IsValid, string ErrorMessage)> ValidateStockAsync(List<OrderItemDto> items)
+    private async Task<(bool IsValid, string ErrorMessage)> ValidateStockAsync(List<OrderItemDto> items, int branchId)
     {
         foreach (var item in items)
         {
             var totalStock = await _context.Batches
-                .Where(b => b.MedicineId == item.MedicineId && b.QuantityOnHand > 0 && b.ExpiryDate > DateTime.Now)
+                .Where(b => b.MedicineId == item.MedicineId && b.BranchId == branchId && b.QuantityOnHand > 0 && b.ExpiryDate > DateTime.Now)
                 .SumAsync(b => b.QuantityOnHand);
 
             if (totalStock < item.Quantity)
@@ -129,10 +133,10 @@ public class DispenseService
         return (true, string.Empty);
     }
 
-    private async Task<List<StockAllocation>> AllocateStockFEFO(int medicineId, int requiredQuantity)
+    private async Task<List<StockAllocation>> AllocateStockFEFO(int medicineId, int requiredQuantity, int branchId)
     {
         var batches = await _context.Batches
-            .Where(b => b.MedicineId == medicineId && b.QuantityOnHand > 0 && b.ExpiryDate > DateTime.Now)
+            .Where(b => b.MedicineId == medicineId && b.BranchId == branchId && b.QuantityOnHand > 0 && b.ExpiryDate > DateTime.Now)
             .OrderBy(b => b.ExpiryDate)
             .ToListAsync();
 
