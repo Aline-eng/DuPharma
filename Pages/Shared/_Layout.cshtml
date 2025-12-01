@@ -83,7 +83,7 @@
                         </div>
                         <div class="user-details">
                             <div class="user-name">@User.Identity.Name</div>
-                            <div class="user-role">@(User.IsInRole("Admin") ? "Admin" : User.IsInRole("Manager") ? "Manager" : "Pharmacist")</div>
+                            <div class="user-role">@(User.IsInRole("Admin") ? "Admin" : User.IsInRole("Manager") ? "Manager" : "Pharmacist") @if(User.FindFirst("BranchId")?.Value != ""){ <span>| Branch: @User.FindFirst("BranchName")?.Value</span> }</div>
                         </div>
                     </div>
                 </header>

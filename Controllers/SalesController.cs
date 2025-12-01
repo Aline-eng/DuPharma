@@ -46,12 +46,20 @@ public class SalesController : Controller
         var user = await _context.Users.FindAsync(userId);
         var branchId = user?.BranchId ?? 1;
         
+        var medicines = await _context.Medicines
+            .Where(m => m.Batches.Any(b => b.BranchId == branchId && b.QuantityOnHand > 0 && b.ExpiryDate > DateTime.Now))
+            .ToListAsync();
+        
+        if (!medicines.Any())
+        {
+            TempData["Error"] = "No medicines available in stock. Cannot create sale.";
+            return RedirectToAction(nameof(Index));
+        }
+        
         var viewModel = new CreateSaleViewModel
         {
             Customers = await _context.Customers.ToListAsync(),
-            Medicines = await _context.Medicines
-                .Where(m => m.Batches.Any(b => b.BranchId == branchId && b.QuantityOnHand > 0 && b.ExpiryDate > DateTime.Now))
-                .ToListAsync()
+            Medicines = medicines
         };
 
         return View(viewModel);

@@ -38,7 +38,8 @@ public class AccountController : Controller
                     new Claim(ClaimTypes.Name, user.FullName),
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(ClaimTypes.Role, _authService.GetRoleName(user.Role)),
-                    new Claim("BranchId", user.BranchId?.ToString() ?? "")
+                    new Claim("BranchId", user.BranchId?.ToString() ?? ""),
+                    new Claim("BranchName", user.Branch?.BranchName ?? "All Branches")
                 };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
