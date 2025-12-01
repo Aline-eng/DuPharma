@@ -23,4 +23,5 @@ public class User
     public ICollection<Prescription> Prescriptions { get; set; } = new List<Prescription>();
     public ICollection<StockMovement> StockMovements { get; set; } = new List<StockMovement>();
     public ICollection<AuditLog> AuditLogs { get; set; } = new List<AuditLog>();
+    
 }
