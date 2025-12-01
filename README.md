@@ -79,7 +79,7 @@ The system automatically creates the `dupharma_db` database with the following t
 - `Branches` - Pharmacy branch information
 - `Suppliers` - Medicine suppliers with contact details
 - `Medicines` - Medicine master data (generic name, brand, strength, form)
-- `Batches` - Medicine batches with expiry dates, pricing, and stock levels
+- `Batches` - Medicine batches with expiry dates, pricing and stock levels
 - `Customers` - Customer information and contact details
 
 ### Transaction Tables
