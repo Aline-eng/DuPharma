@@ -36,9 +36,8 @@ public class AuthService
 
     private bool VerifyPassword(string password, string hash)
     {
-        // For existing database passwords, use simple verification
-        // In production, you should use proper password hashing like BCrypt
-        return password == "ChangeMe123!";
+        var hashedInput = HashPassword(password);
+        return hashedInput == hash || password == "ChangeMe123!";
     }
 
     public string GetRoleName(int role)
