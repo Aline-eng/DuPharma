@@ -24,12 +24,24 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWNjb3VudFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/PREACHER/source/repos/DuPharma/Pages/Batches/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQmF0Y2hlc1xDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PREACHER/source/repos/DuPharma/Pages/Batches/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQmF0Y2hlc1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/PREACHER/source/repos/DuPharma/Pages/Batches/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQmF0Y2hlc1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/PREACHER/source/repos/DuPharma/Pages/Customers/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3VzdG9tZXJzXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PREACHER/source/repos/DuPharma/Pages/Customers/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3VzdG9tZXJzXEVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/PREACHER/source/repos/DuPharma/Pages/Customers/Index.cshtml]

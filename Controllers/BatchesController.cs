@@ -36,6 +36,9 @@ public class BatchesController : Controller
     [HttpPost]
     public async Task<IActionResult> Create(Batch batch)
     {
+        ModelState.Remove("Medicine");
+        ModelState.Remove("Supplier");
+        
         if (ModelState.IsValid)
         {
             _context.Batches.Add(batch);
@@ -62,6 +65,9 @@ public class BatchesController : Controller
     public async Task<IActionResult> Edit(int id, Batch batch)
     {
         if (id != batch.BatchId) return NotFound();
+        
+        ModelState.Remove("Medicine");
+        ModelState.Remove("Supplier");
 
         if (ModelState.IsValid)
         {
