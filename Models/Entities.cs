@@ -11,6 +11,8 @@ public class Branch
     [MaxLength(200)]
     public string Location { get; set; } = string.Empty;
     public ICollection<User> Users { get; set; } = new List<User>();
+    public ICollection<Sale> Sales { get; set; } = new List<Sale>();
+    public ICollection<Batch> Batches { get; set; } = new List<Batch>();
 }
 
 public class Supplier
@@ -59,9 +61,11 @@ public class Batch
     public decimal SellingPrice { get; set; }
     public int SupplierId { get; set; }
     public DateTime ReceivedDate { get; set; }
+    public int BranchId { get; set; }
     
     public Medicine Medicine { get; set; } = null!;
     public Supplier Supplier { get; set; } = null!;
+    public Branch Branch { get; set; } = null!;
     public ICollection<SaleItem> SaleItems { get; set; } = new List<SaleItem>();
     public ICollection<StockMovement> StockMovements { get; set; } = new List<StockMovement>();
 }
@@ -93,9 +97,11 @@ public class Sale
     public decimal TotalAmount { get; set; }
     [MaxLength(20)]
     public string PaymentMethod { get; set; } = "Cash";
+    public int BranchId { get; set; }
     
     public User SoldByUser { get; set; } = null!;
     public Customer? Customer { get; set; }
+    public Branch Branch { get; set; } = null!;
     public ICollection<SaleItem> SaleItems { get; set; } = new List<SaleItem>();
 }
 

@@ -22,23 +22,35 @@ public class SalesController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var sales = await _context.Sales
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var user = await _context.Users.FindAsync(userId);
+        
+        var query = _context.Sales
             .Include(s => s.Customer)
             .Include(s => s.SoldByUser)
-            .OrderByDescending(s => s.SaleDate)
-            .Take(50)
-            .ToListAsync();
-
+            .Include(s => s.Branch)
+            .AsQueryable();
+        
+        if (!User.IsInRole("Admin") && user?.BranchId != null)
+        {
+            query = query.Where(s => s.BranchId == user.BranchId);
+        }
+        
+        var sales = await query.OrderByDescending(s => s.SaleDate).Take(50).ToListAsync();
         return View(sales);
     }
 
     public async Task<IActionResult> Create()
     {
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var user = await _context.Users.FindAsync(userId);
+        var branchId = user?.BranchId ?? 1;
+        
         var viewModel = new CreateSaleViewModel
         {
             Customers = await _context.Customers.ToListAsync(),
             Medicines = await _context.Medicines
-                .Where(m => m.Batches.Any(b => b.QuantityOnHand > 0 && b.ExpiryDate > DateTime.Now))
+                .Where(m => m.Batches.Any(b => b.BranchId == branchId && b.QuantityOnHand > 0 && b.ExpiryDate > DateTime.Now))
                 .ToListAsync()
         };
 
@@ -48,18 +60,21 @@ public class SalesController : Controller
     [HttpPost]
     public async Task<IActionResult> Create(CreateSaleViewModel model)
     {
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var user = await _context.Users.FindAsync(userId);
+        var branchId = user?.BranchId ?? 1;
+        
         if (!ModelState.IsValid)
         {
             model.Customers = await _context.Customers.ToListAsync();
             model.Medicines = await _context.Medicines
-                .Where(m => m.Batches.Any(b => b.QuantityOnHand > 0 && b.ExpiryDate > DateTime.Now))
+                .Where(m => m.Batches.Any(b => b.BranchId == branchId && b.QuantityOnHand > 0 && b.ExpiryDate > DateTime.Now))
                 .ToListAsync();
             return View(model);
         }
 
         try
         {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
             var order = new OrderDto
             {
                 CustomerId = model.CustomerId,
@@ -75,7 +90,7 @@ public class SalesController : Controller
             ModelState.AddModelError("", ex.Message);
             model.Customers = await _context.Customers.ToListAsync();
             model.Medicines = await _context.Medicines
-                .Where(m => m.Batches.Any(b => b.QuantityOnHand > 0 && b.ExpiryDate > DateTime.Now))
+                .Where(m => m.Batches.Any(b => b.BranchId == branchId && b.QuantityOnHand > 0 && b.ExpiryDate > DateTime.Now))
                 .ToListAsync();
             return View(model);
         }
