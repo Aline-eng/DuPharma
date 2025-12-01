@@ -1,3 +1,5 @@
 .vs/
 database_setup.sql
 add_branch_columns.sql
+bin/
+obj/
