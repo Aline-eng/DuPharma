@@ -1,7 +1,16 @@
-wwwroot\css\site.css
 wwwroot\DupharmaIcon.svg
 wwwroot\dupharmaLogin.svg
 wwwroot\favicon.ico
+wwwroot\images\amoxicillin-amoxil.jpg
+wwwroot\images\aspirin-bayer.jpg
+wwwroot\images\atorvastatin-lipitor.jpg
+wwwroot\images\doc.jpg
+wwwroot\images\ibuprofen-advil.jpg
+wwwroot\images\lisinopril-prinivil.jpg
+wwwroot\images\medicine-default.png
+wwwroot\images\metformin-glucophage.jpg
+wwwroot\images\omeprazole-prilosec.jpg
+wwwroot\images\paracetamol-panadol.jpg
 wwwroot\js\site.js
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
@@ -60,3 +69,4 @@ wwwroot\lib\jquery\dist\jquery.js
 wwwroot\lib\jquery\dist\jquery.min.js
 wwwroot\lib\jquery\dist\jquery.min.map
 wwwroot\lib\jquery\LICENSE.txt
+wwwroot\css\site.css

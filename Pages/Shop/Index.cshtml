@@ -1,0 +1,236 @@
+@model IEnumerable<dynamic>
+@{
+    ViewData["Title"] = "Browse Medicines";
+    Layout = "~/Pages/Shared/_ShopLayout.cshtml";
+}
+
+<div class="hero-section">
+    <div class="hero-overlay">
+        <div class="container">
+            <h1 class="hero-title">Browse Medicines</h1>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <form method="get" class="hero-search">
+                        <input type="text" name="search" class="form-control" placeholder="Search medicines..." value="@ViewBag.Search">
+                        <button class="btn btn-primary" type="submit">Search</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-success" onclick="showCart()">
+            <i class="bi bi-cart"></i> Cart (<span id="cartCount">0</span>)
+        </button>
+    </div>
+
+    <div class="row">
+        @foreach (var medicine in Model)
+        {
+            <div class="col-md-3 mb-4">
+                <div class="card h-100">
+                    <img src="@medicine.ImageUrl" class="card-img-top" alt="@medicine.BrandName">
+                    <div class="card-body">
+                        <h5 class="card-title">@medicine.BrandName</h5>
+                        <p class="card-text text-muted">@medicine.GenericName</p>
+                        <p class="card-text">@medicine.Strength - @medicine.Form</p>
+                        <p class="card-text"><strong>$@medicine.Price.ToString("F2")</strong></p>
+                        @if (medicine.RequiresPrescription)
+                        {
+                            <span class="badge bg-warning">Prescription Required</span>
+                        }
+                    </div>
+                    <div class="card-footer">
+                        <a href="/Shop/Details/@medicine.MedicineId" class="btn btn-sm btn-info">Details</a>
+                        <button class="btn btn-sm btn-primary" onclick="addToCart(@medicine.MedicineId, '@medicine.BrandName', @medicine.Price, @medicine.RequiresPrescription.ToString().ToLower())">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="modal fade" id="cartModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Shopping Cart</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="cartItems"></div>
+                <hr>
+                <h4>Total: $<span id="cartTotal">0.00</span></h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Continue Shopping</button>
+                <button type="button" class="btn btn-primary" onclick="checkout()">Checkout</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="checkoutModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Checkout</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="checkoutForm">
+                    <div class="mb-3">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="customerName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="customerEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Phone</label>
+                        <input type="tel" class="form-control" id="customerPhone" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Delivery Address</label>
+                        <textarea class="form-control" id="deliveryAddress" required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" onclick="placeOrder()">Place Order</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="prescriptionModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Upload Prescription</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>This medicine requires a prescription. Please upload your prescription.</p>
+                <input type="file" class="form-control" id="prescriptionFile" accept="image/*,.pdf">
+                <input type="hidden" id="prescriptionMedicineId">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="uploadPrescription()">Upload & Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+const medicinesData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model));
+let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+updateCartCount();
+
+function addToCart(id, name, price, requiresPrescription) {
+    if (requiresPrescription) {
+        $('#prescriptionMedicineId').val(id);
+        $('#prescriptionModal').modal('show');
+        return;
+    }
+    addItemToCart(id, name, price, null);
+}
+
+function addItemToCart(id, name, price, prescriptionUrl) {
+    const existing = cart.find(i => i.id === id);
+    if (existing) {
+        existing.quantity++;
+    } else {
+        cart.push({ id, name, price, quantity: 1, prescriptionUrl });
+    }
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartCount();
+    alert('Added to cart!');
+}
+
+function uploadPrescription() {
+    const file = $('#prescriptionFile')[0].files[0];
+    if (!file) return alert('Please select a file');
+    
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    fetch('/Orders/UploadPrescription', { method: 'POST', body: formData })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                const id = parseInt($('#prescriptionMedicineId').val());
+                const item = medicinesData.find(m => m.MedicineId == id);
+                addItemToCart(id, item.BrandName, item.Price, data.url);
+                $('#prescriptionModal').modal('hide');
+            }
+        });
+}
+
+function updateCartCount() {
+    $('#cartCount').text(cart.reduce((sum, i) => sum + i.quantity, 0));
+}
+
+function showCart() {
+    let html = '';
+    cart.forEach((item, idx) => {
+        html += `<div class="d-flex justify-content-between mb-2">
+            <div>${item.name} x ${item.quantity}</div>
+            <div>$${(item.price * item.quantity).toFixed(2)} 
+                <button class="btn btn-sm btn-danger" onclick="removeFromCart(${idx})">Remove</button>
+            </div>
+        </div>`;
+    });
+    $('#cartItems').html(html || '<p>Cart is empty</p>');
+    $('#cartTotal').text(cart.reduce((sum, i) => sum + (i.price * i.quantity), 0).toFixed(2));
+    $('#cartModal').modal('show');
+}
+
+function removeFromCart(idx) {
+    cart.splice(idx, 1);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartCount();
+    showCart();
+}
+
+function checkout() {
+    if (cart.length === 0) return alert('Cart is empty');
+    $('#cartModal').modal('hide');
+    $('#checkoutModal').modal('show');
+}
+
+function placeOrder() {
+    const order = {
+        customerName: $('#customerName').val(),
+        customerEmail: $('#customerEmail').val(),
+        customerPhone: $('#customerPhone').val(),
+        deliveryAddress: $('#deliveryAddress').val(),
+        items: cart.map(i => ({ medicineId: i.id, quantity: i.quantity, prescriptionImageUrl: i.prescriptionUrl }))
+    };
+    
+    fetch('/Orders/Create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(order)
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            alert(`Order placed successfully! Order Number: ${data.orderNumber}`);
+            cart = [];
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            $('#checkoutModal').modal('hide');
+            location.reload();
+        }
+    });
+}
+</script>
+}

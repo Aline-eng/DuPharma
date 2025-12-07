@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\PREACHER\\source\\repos\\DuPharma\\DuPharma.csproj": {}
+    "C:\\Users\\hp\\Documents\\.NET\\DuPharma\\DuPharma.csproj": {}
   },
   "projects": {
-    "C:\\Users\\PREACHER\\source\\repos\\DuPharma\\DuPharma.csproj": {
+    "C:\\Users\\hp\\Documents\\.NET\\DuPharma\\DuPharma.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\PREACHER\\source\\repos\\DuPharma\\DuPharma.csproj",
+        "projectUniqueName": "C:\\Users\\hp\\Documents\\.NET\\DuPharma\\DuPharma.csproj",
         "projectName": "DuPharma",
-        "projectPath": "C:\\Users\\PREACHER\\source\\repos\\DuPharma\\DuPharma.csproj",
-        "packagesPath": "C:\\Users\\PREACHER\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\PREACHER\\source\\repos\\DuPharma\\obj\\",
+        "projectPath": "C:\\Users\\hp\\Documents\\.NET\\DuPharma\\DuPharma.csproj",
+        "packagesPath": "C:\\Users\\hp\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\hp\\Documents\\.NET\\DuPharma\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\PREACHER\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\hp\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,7 +26,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -51,6 +50,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "AWSSDK.Core": {
+              "target": "Package",
+              "version": "[4.0.3.4, )"
+            },
             "ClosedXML": {
               "target": "Package",
               "version": "[0.102.1, )"
@@ -95,7 +98,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

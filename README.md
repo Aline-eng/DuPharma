@@ -1,16 +1,25 @@
 # DuPharma - Pharmacy Management System
 
-A comprehensive ASP.NET Core 8 MVC pharmacy management system with role-based access control, inventory management, and sales tracking.
+A comprehensive ASP.NET Core 8 MVC pharmacy management system with role-based access control, inventory management, sales tracking, and customer-facing online shop.
 
 
 ## Features
 
+### Staff Features
 - **Role-based Authentication**: Admin, Manager and Pharmacist roles. 
 - **Medicine Management**: CRUD operations with batch tracking.
 - **Sales Management**: POS system with FEFO allocation. 
 - **Inventory Tracking**: Real-time stock levels and expiry alerts.
 - **Dashboard**: Low stock alerts, expiring medicines, top-selling items.
 - **Reports**: Sales reports and analytics.
+- **Order Management**: Review and approve customer orders.
+
+### Customer Features
+- **Online Shop**: Browse and search medicines with images and prices.
+- **Shopping Cart**: Add items and manage quantities.
+- **Prescription Upload**: Upload prescriptions for controlled medicines.
+- **Order Placement**: Submit orders with delivery information.
+- **No Login Required**: Public access to shop.
 
 ## Prerequisites
 
@@ -63,6 +72,20 @@ dotnet run
 
 The application will be available at `https://localhost:5001` or `http://localhost:5000`
 
+**Default Page**: The application opens to the customer shop at `/Shop` with a link to staff login.
+
+### 5. Setup Shop Feature (Optional)
+
+Run the shop migration to add customer ordering features:
+
+```bash
+# Run in SQL Server Management Studio or sqlcmd
+sqlcmd -S . -d dupharma_db -i AddShopFeatures.sql
+sqlcmd -S . -d dupharma_db -i UpdateMedicineImages.sql
+```
+
+Add medicine images to `wwwroot/images/` folder (see SHOP_SETUP.md for details).
+
 ## Default Login Credentials
 
 - **Email**: admin@dupharma.local
@@ -78,13 +101,15 @@ The system automatically creates the `dupharma_db` database with the following t
 - `Roles` - Identity role management
 - `Branches` - Pharmacy branch information
 - `Suppliers` - Medicine suppliers with contact details
-- `Medicines` - Medicine master data (generic name, brand, strength, form)
+- `Medicines` - Medicine master data with description, image, prescription requirement
 - `Batches` - Medicine batches with expiry dates, pricing and stock levels
 - `Customers` - Customer information and contact details
 
 ### Transaction Tables
 - `Sales` - Sale transactions with invoice numbers and totals
 - `SaleItems` - Individual sale line items with batch allocation
+- `Orders` - Customer online orders with delivery information
+- `OrderItems` - Order line items with prescription uploads
 - `Prescriptions` - Customer prescriptions from doctors
 - `PrescriptionItems` - Prescription line items with dosage information
 - `StockMovements` - Inventory movement tracking (IN/OUT/ADJUSTMENT)
@@ -138,11 +163,25 @@ The system automatically creates the `dupharma_db` database with the following t
 - Automatic stock updates
 - Reorder level alerts
 
+### Customer Shop
+- Public medicine catalog with search
+- Medicine details with images and descriptions
+- Shopping cart with localStorage
+- Prescription upload for controlled medicines
+- Order placement with customer information
+- Staff order approval workflow
+
 ### Business Logic
 - **FEFO Allocation**: Automatically allocates stock from batches with earliest expiry dates
 - **Transaction Safety**: All sales operations use database transactions
 - **Stock Validation**: Prevents overselling with real-time stock checks 
 - **Audit Trail**: Tracks all critical operations
+
+## Public Pages
+
+- `/Shop` - Customer medicine catalog (default page)
+- `/Shop/Details/{id}` - Medicine details
+- `/Account/Login` - Staff login
 
 ## API Endpoints
 
@@ -151,6 +190,13 @@ The system automatically creates the `dupharma_db` database with the following t
 GET /api/medicines?q=search_term
 ```
 Returns JSON array of medicines matching the search term with current stock and pricing.
+
+### Order Management API
+```
+POST /Orders/Create - Create customer order
+POST /Orders/UploadPrescription - Upload prescription image
+POST /Orders/UpdateStatus - Update order status (staff only)
+```
 
 ## Development Notes
 
