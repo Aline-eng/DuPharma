@@ -16,7 +16,7 @@ sqlcmd -S . -d dupharma_db -i AddShopFeatures.sql
 
 Or manually run the SQL from `AddShopFeatures.sql` file and `UpdateMedecineImages.sql` file.
 
-### 2. Add Medicine Images(optional)
+### 2. Add Medicine Images
 
 Place medicine images in `wwwroot/images/` folder. Update medicine records with image URLs:
 
