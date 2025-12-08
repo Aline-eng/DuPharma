@@ -21,7 +21,7 @@ CREATE TABLE [UserPermissions] (
     CONSTRAINT [PK_UserPermissions] PRIMARY KEY ([UserPermissionId]),
     CONSTRAINT [FK_UserPermissions_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([UserId]) ON DELETE CASCADE,
     CONSTRAINT [FK_UserPermissions_Permissions_PermissionId] FOREIGN KEY ([PermissionId]) REFERENCES [Permissions] ([PermissionId]) ON DELETE CASCADE,
-    CONSTRAINT [FK_UserPermissions_GrantedByUsers_GrantedByUserId] FOREIGN KEY ([GrantedByUserId]) REFERENCES [Users] ([UserId]) ON DELETE SET NULL
+    CONSTRAINT [FK_UserPermissions_GrantedByUsers_GrantedByUserId] FOREIGN KEY ([GrantedByUserId]) REFERENCES [Users] ([UserId]) ON DELETE NO ACTION
 );
 
 -- Create indexes
