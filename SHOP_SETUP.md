@@ -14,9 +14,9 @@ Execute the SQL script to add shop tables and columns:
 sqlcmd -S . -d dupharma_db -i AddShopFeatures.sql
 ```
 
-Or manually run the SQL from `AddShopFeatures.sql` file.
+Or manually run the SQL from `AddShopFeatures.sql` file and `UpdateMedecineImages.sql` file.
 
-### 2. Add Medicine Images (Optional)
+### 2. Add Medicine Images(optional)
 
 Place medicine images in `wwwroot/images/` folder. Update medicine records with image URLs:
 
@@ -28,7 +28,7 @@ Default image path is `/images/medicine-default.png`
 
 ### 3. Access the Shop
 
-- **Customer Shop**: Navigate to `https://localhost:5001/Shop`
+- **Customer Shop**: Navigate to `https://localhost:5143/Shop`
 - **Staff Orders Management**: Login and go to Orders menu
 
 ## Features

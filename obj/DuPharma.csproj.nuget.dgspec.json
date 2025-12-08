@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\hp\\Documents\\.NET\\DuPharma\\DuPharma.csproj": {}
+    "C:\\Users\\KARLIE\\source\\repos\\DuPharma\\DuPharma.csproj": {}
   },
   "projects": {
-    "C:\\Users\\hp\\Documents\\.NET\\DuPharma\\DuPharma.csproj": {
+    "C:\\Users\\KARLIE\\source\\repos\\DuPharma\\DuPharma.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\hp\\Documents\\.NET\\DuPharma\\DuPharma.csproj",
+        "projectUniqueName": "C:\\Users\\KARLIE\\source\\repos\\DuPharma\\DuPharma.csproj",
         "projectName": "DuPharma",
-        "projectPath": "C:\\Users\\hp\\Documents\\.NET\\DuPharma\\DuPharma.csproj",
-        "packagesPath": "C:\\Users\\hp\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\hp\\Documents\\.NET\\DuPharma\\obj\\",
+        "projectPath": "C:\\Users\\KARLIE\\source\\repos\\DuPharma\\DuPharma.csproj",
+        "packagesPath": "C:\\Users\\KARLIE\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\KARLIE\\source\\repos\\DuPharma\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\hp\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\KARLIE\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,6 +26,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
