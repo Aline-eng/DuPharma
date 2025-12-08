@@ -1,5 +1,12 @@
+## Visual Studio
 .vs/
+*.suo
+*.user
+
+## Build
+[Bb]in/
+[Oo]bj/
+
+## SQL files
 database_setup.sql
 add_branch_columns.sql
-bin/
-obj/
