@@ -22,6 +22,28 @@ public class OrdersController : Controller
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] OrderRequest request)
     {
+        // Validate branch selection
+        if (request.BranchId <= 0)
+            return Json(new { success = false, message = "Please select a branch" });
+
+        // Check if all items are available in selected branch
+        var unavailableItems = new List<string>();
+        foreach (var item in request.Items)
+        {
+            var stock = await _context.Batches
+                .Where(b => b.MedicineId == item.MedicineId && b.BranchId == request.BranchId && b.QuantityOnHand >= item.Quantity)
+                .SumAsync(b => b.QuantityOnHand);
+
+            if (stock < item.Quantity)
+            {
+                var medicine = await _context.Medicines.FindAsync(item.MedicineId);
+                unavailableItems.Add(medicine?.BrandName ?? "Unknown");
+            }
+        }
+
+        if (unavailableItems.Any())
+            return Json(new { success = false, message = $"Items not available in selected branch: {string.Join(", ", unavailableItems)}" });
+
         var order = new Order
         {
             OrderNumber = $"ORD{DateTime.Now:yyyyMMddHHmmss}",
@@ -30,7 +52,7 @@ public class OrdersController : Controller
             CustomerPhone = request.CustomerPhone,
             DeliveryAddress = request.DeliveryAddress,
             OrderDate = DateTime.Now,
-            BranchId = 1,
+            BranchId = request.BranchId,
             Status = "Pending"
         };
 
@@ -41,7 +63,7 @@ public class OrdersController : Controller
             if (medicine == null) continue;
 
             var price = await _context.Batches
-                .Where(b => b.MedicineId == item.MedicineId && b.QuantityOnHand > 0)
+                .Where(b => b.MedicineId == item.MedicineId && b.BranchId == request.BranchId && b.QuantityOnHand > 0)
                 .MinAsync(b => (decimal?)b.SellingPrice) ?? 0;
 
             var orderItem = new OrderItem
@@ -85,13 +107,23 @@ public class OrdersController : Controller
     [Authorize(Roles = "Admin,Manager,Pharmacist")]
     public async Task<IActionResult> Index()
     {
-        var orders = await _context.Orders
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var user = await _context.Users.FindAsync(userId);
+        var isAdmin = User.IsInRole("Admin");
+
+        var query = _context.Orders
             .Include(o => o.OrderItems)
             .ThenInclude(oi => oi.Medicine)
             .Include(o => o.Branch)
-            .OrderByDescending(o => o.OrderDate)
-            .ToListAsync();
+            .AsQueryable();
 
+        // Filter by branch if not admin
+        if (!isAdmin && user?.BranchId != null)
+        {
+            query = query.Where(o => o.BranchId == user.BranchId);
+        }
+
+        var orders = await query.OrderByDescending(o => o.OrderDate).ToListAsync();
         return View(orders);
     }
 
@@ -117,6 +149,7 @@ public class OrderRequest
     public string CustomerEmail { get; set; } = "";
     public string CustomerPhone { get; set; } = "";
     public string DeliveryAddress { get; set; } = "";
+    public int BranchId { get; set; }
     public List<OrderItemRequest> Items { get; set; } = new();
 }
 
