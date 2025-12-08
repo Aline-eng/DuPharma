@@ -23,6 +23,7 @@ public class AppDbContext : DbContext
     public DbSet<OrderItem> OrderItems { get; set; }
     public DbSet<Permission> Permissions { get; set; }
     public DbSet<UserPermission> UserPermissions { get; set; }
+    public DbSet<ContactMessage> ContactMessages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -179,5 +180,20 @@ public class AppDbContext : DbContext
             .WithMany()
             .HasForeignKey(up => up.GrantedByUserId)
             .OnDelete(DeleteBehavior.SetNull);
+
+        // ContactMessage relationships
+        builder.Entity<ContactMessage>()
+            .HasOne(cm => cm.RepliedByUser)
+            .WithMany()
+            .HasForeignKey(cm => cm.RepliedByUserId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.Entity<ContactMessage>()
+            .HasIndex(cm => cm.CreatedAt)
+            .HasDatabaseName("IX_ContactMessage_CreatedAt");
+
+        builder.Entity<ContactMessage>()
+            .HasIndex(cm => cm.IsReplied)
+            .HasDatabaseName("IX_ContactMessage_IsReplied");
     }
 }

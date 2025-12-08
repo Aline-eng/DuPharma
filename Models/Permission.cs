@@ -79,4 +79,9 @@ public static class Permissions
     // System Administration
     public const string ManagePermissions = "ManagePermissions";
     public const string ViewAuditLogs = "ViewAuditLogs";
+    
+    // Contact Messages
+    public const string ViewContactMessages = "ViewContactMessages";
+    public const string ReplyContactMessages = "ReplyContactMessages";
+    public const string DeleteContactMessages = "DeleteContactMessages";
 }

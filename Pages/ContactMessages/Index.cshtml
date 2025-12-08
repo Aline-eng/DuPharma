@@ -1,0 +1,132 @@
+@model IEnumerable<DuPharma.Models.ContactMessage>
+@{
+    ViewData["Title"] = "Contact Messages";
+}
+
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-envelope me-2"></i>Contact Messages</h2>
+        <div class="btn-group" role="group">
+            <a href="?filter=all" class="btn @(ViewBag.Filter == "all" ? "btn-primary" : "btn-outline-primary")">
+                All (@ViewBag.TotalCount)
+            </a>
+            <a href="?filter=pending" class="btn @(ViewBag.Filter == "pending" ? "btn-warning" : "btn-outline-warning")">
+                Pending (@ViewBag.PendingCount)
+            </a>
+            <a href="?filter=replied" class="btn @(ViewBag.Filter == "replied" ? "btn-success" : "btn-outline-success")">
+                Replied (@ViewBag.RepliedCount)
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="bi bi-check-circle-fill me-2"></i>@TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card">
+        <div class="card-body p-0">
+            @if (!Model.Any())
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox" style="font-size: 3rem; color: #999;"></i>
+                    <h4 class="mt-3">No messages found</h4>
+                    <p class="text-muted">
+                        @if (ViewBag.Filter == "pending")
+                        {
+                            <text>No pending messages at the moment.</text>
+                        }
+                        else if (ViewBag.Filter == "replied")
+                        {
+                            <text>No replied messages found.</text>
+                        }
+                        else
+                        {
+                            <text>No contact messages have been received yet.</text>
+                        }
+                    </p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Date</th>
+                                <th>From</th>
+                                <th>Subject</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var message in Model)
+                            {
+                                <tr class="@(message.IsReplied ? "" : "table-warning")">
+                                    <td>
+                                        <small class="text-muted">@message.CreatedAt.ToString("MMM dd, yyyy")</small><br>
+                                        <small class="text-muted">@message.CreatedAt.ToString("HH:mm")</small>
+                                    </td>
+                                    <td>
+                                        <strong>@message.FullName</strong><br>
+                                        <small class="text-muted">@message.Email</small>
+                                        @if (!string.IsNullOrEmpty(message.Phone))
+                                        {
+                                            <br><small class="text-muted"><i class="bi bi-telephone"></i> @message.Phone</small>
+                                        }
+                                    </td>
+                                    <td>
+                                        <strong>@message.Subject</strong><br>
+                                        <small class="text-muted">@(message.Message.Length > 100 ? message.Message.Substring(0, 100) + "..." : message.Message)</small>
+                                    </td>
+                                    <td>
+                                        @if (message.IsReplied)
+                                        {
+                                            <span class="badge bg-success">
+                                                <i class="bi bi-check-circle"></i> Replied
+                                            </span>
+                                            @if (message.RepliedAt.HasValue)
+                                            {
+                                                <br><small class="text-muted">@message.RepliedAt.Value.ToString("MMM dd, HH:mm")</small>
+                                            }
+                                            @if (message.RepliedByUser != null)
+                                            {
+                                                <br><small class="text-muted">by @message.RepliedByUser.FullName</small>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning">
+                                                <i class="bi bi-clock"></i> Pending
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="btn-group-vertical btn-group-sm">
+                                            <a href="@Url.Action("Details", new { id = message.Id })" class="btn btn-outline-primary btn-sm">
+                                                <i class="bi bi-eye"></i> View
+                                            </a>
+                                            @if (!message.IsReplied)
+                                            {
+                                                <a href="@Url.Action("Reply", new { id = message.Id })" class="btn btn-outline-success btn-sm">
+                                                    <i class="bi bi-reply"></i> Reply
+                                                </a>
+                                            }
+                                            <a href="@Url.Action("Delete", new { id = message.Id })" class="btn btn-outline-danger btn-sm">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>

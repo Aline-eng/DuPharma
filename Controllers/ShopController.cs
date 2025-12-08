@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using DuPharma.Data;
 using DuPharma.Models;
+using System.Linq;
 
 namespace DuPharma.Controllers;
 
@@ -15,7 +16,49 @@ public class ShopController : Controller
 
     public IActionResult Home() => View();
     public IActionResult About() => View();
-    public IActionResult Contact() => View();
+    public IActionResult Contact() => View(new ContactFormViewModel());
+
+    [HttpPost]
+    public IActionResult Contact(ContactFormViewModel model)
+    {
+        ModelState.Remove("HoneyPot");
+        
+        if (!string.IsNullOrEmpty(model?.HoneyPot))
+        {
+            TempData["Success"] = "Your message has been sent!";
+            return RedirectToAction("Contact");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            TempData["Error"] = "Please fill in all required fields correctly.";
+            return View(model);
+        }
+
+        try
+        {
+            var contactMessage = new ContactMessage
+            {
+                FullName = model.FullName,
+                Email = model.Email,
+                Phone = model.Phone ?? string.Empty,
+                Subject = model.Subject,
+                Message = model.Message,
+                CreatedAt = DateTime.Now
+            };
+
+            _context.ContactMessages.Add(contactMessage);
+            _context.SaveChanges();
+
+            TempData["Success"] = "Thank you! Your message has been sent successfully.";
+            return RedirectToAction("Contact");
+        }
+        catch
+        {
+            TempData["Error"] = "Sorry, there was an error. Please try again.";
+            return View(model);
+        }
+    }
 
     public async Task<IActionResult> Index(string search = "", string category = "", int? branchId = null)
     {

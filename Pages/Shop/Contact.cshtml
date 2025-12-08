@@ -1,3 +1,4 @@
+@model DuPharma.Models.ContactFormViewModel
 @{
     ViewData["Title"] = "Contact Us";
     Layout = "~/Pages/Shared/_ShopLayout.cshtml";
@@ -8,6 +9,32 @@
         <h1 class="display-4 fw-bold">Contact Us</h1>
         <p class="lead">We're here to help. Reach out to us anytime!</p>
     </div>
+</div>
+
+<div class="container mt-3">
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>@TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>@TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ErrorCount > 0)
+    {
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>Please check the form fields below.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
 </div>
 
 <div class="container my-5">
@@ -41,28 +68,42 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-4">
                     <h3 class="mb-4">Send Us a Message</h3>
-                    <form>
+                    <form asp-controller="Shop" asp-action="Contact" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        
+                        <!-- Anti-bot honeypot field (hidden) -->
+                        <div style="position: absolute; left: -9999px; top: -9999px;">
+                            <input name="HoneyPot" type="text" tabindex="-1" autocomplete="off" inert>
+                        </div>
+                        
                         <div class="mb-3">
-                            <label class="form-label">Full Name</label>
-                            <input type="text" class="form-control" placeholder="Enter your name" required>
+                            <label asp-for="FullName" class="form-label">Full Name <span class="text-danger">*</span></label>
+                            <input asp-for="FullName" class="form-control" placeholder="Enter your name">
+                            <span asp-validation-for="FullName" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Email Address</label>
-                            <input type="email" class="form-control" placeholder="Enter your email" required>
+                            <label asp-for="Email" class="form-label">Email Address <span class="text-danger">*</span></label>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="Enter your email">
+                            <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Phone Number</label>
-                            <input type="tel" class="form-control" placeholder="Enter your phone" required>
+                            <label asp-for="Phone" class="form-label">Phone Number</label>
+                            <input asp-for="Phone" type="tel" class="form-control" placeholder="Enter your phone">
+                            <span asp-validation-for="Phone" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Subject</label>
-                            <input type="text" class="form-control" placeholder="Enter subject" required>
+                            <label asp-for="Subject" class="form-label">Subject <span class="text-danger">*</span></label>
+                            <input asp-for="Subject" class="form-control" placeholder="Enter subject">
+                            <span asp-validation-for="Subject" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Message</label>
-                            <textarea class="form-control" rows="4" placeholder="Enter your message" required></textarea>
+                            <label asp-for="Message" class="form-label">Message <span class="text-danger">*</span></label>
+                            <textarea asp-for="Message" class="form-control" rows="4" placeholder="Enter your message"></textarea>
+                            <span asp-validation-for="Message" class="text-danger"></span>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">Send Message</button>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-send me-2"></i>Send Message
+                        </button>
                     </form>
                 </div>
             </div>
@@ -107,3 +148,23 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function() {
+            $('form').on('submit', function() {
+                console.log('Form submit event triggered');
+                var submitBtn = $(this).find('button[type="submit"]');
+                submitBtn.prop('disabled', true);
+                submitBtn.html('<i class="bi bi-hourglass-split me-2"></i>Sending...');
+
+                // Reset button after 10 seconds if no response
+                setTimeout(function() {
+                    submitBtn.prop('disabled', false);
+                    submitBtn.html('<i class="bi bi-send me-2"></i>Send Message');
+                }, 10000);
+            });
+        });
+    </script>
+}
