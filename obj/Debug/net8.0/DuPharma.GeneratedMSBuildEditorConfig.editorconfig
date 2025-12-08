@@ -104,8 +104,20 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/KARLIE/source/repos/DuPharma/Pages/Shop/About.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hvcFxBYm91dC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/KARLIE/source/repos/DuPharma/Pages/Shop/Contact.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hvcFxDb250YWN0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/KARLIE/source/repos/DuPharma/Pages/Shop/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hvcFxEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/KARLIE/source/repos/DuPharma/Pages/Shop/Home.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hvcFxIb21lLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/KARLIE/source/repos/DuPharma/Pages/Shop/Index.cshtml]

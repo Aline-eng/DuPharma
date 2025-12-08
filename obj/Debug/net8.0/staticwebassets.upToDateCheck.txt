@@ -70,3 +70,4 @@ wwwroot\lib\jquery\dist\jquery.js
 wwwroot\lib\jquery\dist\jquery.min.js
 wwwroot\lib\jquery\dist\jquery.min.map
 wwwroot\lib\jquery\LICENSE.txt
+wwwroot\prescriptions\194313a1-50a2-408b-86e5-f9eae8db6ed1.pdf
