@@ -43,6 +43,11 @@ public class Medicine
     [MaxLength(20)]
     public string Unit { get; set; } = string.Empty;
     public int ReorderLevel { get; set; }
+    [MaxLength(500)]
+    public string Description { get; set; } = string.Empty;
+    [MaxLength(200)]
+    public string ImageUrl { get; set; } = "/images/medicine-default.png";
+    public bool RequiresPrescription { get; set; }
     public ICollection<Batch> Batches { get; set; } = new List<Batch>();
     public ICollection<PrescriptionItem> PrescriptionItems { get; set; } = new List<PrescriptionItem>();
 }
@@ -186,4 +191,51 @@ public class AuditLog
     public DateTime CreatedAt { get; set; }
     
     public User User { get; set; } = null!;
+}
+
+public class Order
+{
+    public int OrderId { get; set; }
+    [Required, MaxLength(20)]
+    public string OrderNumber { get; set; } = string.Empty;
+    public int? CustomerId { get; set; }
+    [MaxLength(100)]
+    public string CustomerName { get; set; } = string.Empty;
+    [MaxLength(100)]
+    public string CustomerEmail { get; set; } = string.Empty;
+    [MaxLength(20)]
+    public string CustomerPhone { get; set; } = string.Empty;
+    [MaxLength(200)]
+    public string DeliveryAddress { get; set; } = string.Empty;
+    public DateTime OrderDate { get; set; }
+    [Column(TypeName = "decimal(10,2)")]
+    public decimal TotalAmount { get; set; }
+    [MaxLength(20)]
+    public string Status { get; set; } = "Pending"; // Pending, Approved, Rejected, Completed
+    public int BranchId { get; set; }
+    public int? ApprovedByUserId { get; set; }
+    [MaxLength(500)]
+    public string Notes { get; set; } = string.Empty;
+    
+    public Customer? Customer { get; set; }
+    public Branch Branch { get; set; } = null!;
+    public User? ApprovedByUser { get; set; }
+    public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+}
+
+public class OrderItem
+{
+    public int OrderItemId { get; set; }
+    public int OrderId { get; set; }
+    public int MedicineId { get; set; }
+    public int Quantity { get; set; }
+    [Column(TypeName = "decimal(10,2)")]
+    public decimal UnitPrice { get; set; }
+    [Column(TypeName = "decimal(10,2)")]
+    public decimal SubTotal { get; set; }
+    [MaxLength(200)]
+    public string PrescriptionImageUrl { get; set; } = string.Empty;
+    
+    public Order Order { get; set; } = null!;
+    public Medicine Medicine { get; set; } = null!;
 }

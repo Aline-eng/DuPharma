@@ -26,6 +26,7 @@ builder.Services.Configure<Microsoft.AspNetCore.Mvc.Razor.RazorViewEngineOptions
 });
 builder.Services.AddScoped<DispenseService>();
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<IPermissionService, PermissionService>();
 
 var app = builder.Build();
 
@@ -46,7 +47,17 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Shop}/{action=Home}/{id?}");
+
+app.MapControllerRoute(
+    name: "staff",
+    pattern: "Home/{action=Index}/{id?}",
+    defaults: new { controller = "Home" });
+
+app.MapControllerRoute(
+    name: "shop",
+    pattern: "Shop/{action}/{id?}",
+    defaults: new { controller = "Shop", action = "Index" });
 
 app.MapControllerRoute(
     name: "account",

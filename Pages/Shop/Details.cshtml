@@ -1,0 +1,99 @@
+@model DuPharma.Models.Medicine
+@{
+    ViewData["Title"] = Model.BrandName;
+    Layout = "~/Pages/Shared/_ShopLayout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-5">
+            <img src="@Model.ImageUrl" class="img-fluid rounded" alt="@Model.BrandName">
+        </div>
+        <div class="col-md-7">
+            <h2>@Model.BrandName</h2>
+            <h5 class="text-muted">@Model.GenericName</h5>
+            <hr>
+            
+            <div class="mb-3">
+                <strong>Strength:</strong> @Model.Strength
+            </div>
+            <div class="mb-3">
+                <strong>Form:</strong> @Model.Form
+            </div>
+            <div class="mb-3">
+                <strong>Unit:</strong> @Model.Unit
+            </div>
+            <div class="mb-3">
+                <strong>Description:</strong>
+                <p>@(string.IsNullOrEmpty(Model.Description) ? "No description available" : Model.Description)</p>
+            </div>
+            
+            @if (Model.RequiresPrescription)
+            {
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle"></i> This medicine requires a valid prescription
+                </div>
+            }
+            
+            <div class="mb-3">
+                <h3 class="text-primary">$@ViewBag.Price.ToString("F2")</h3>
+                <p class="text-muted">Available Stock: @ViewBag.Stock units</p>
+            </div>
+            
+            <div class="mb-3">
+                <strong>Available in Branches:</strong>
+                <div class="mt-2">
+                    @if (ViewBag.AvailableBranches.Count > 0)
+                    {
+                        @foreach (var branch in ViewBag.AvailableBranches)
+                        {
+                            <span class="badge bg-success me-2 mb-2">
+                                <i class="bi bi-check-circle"></i> @branch.BranchName (@branch.Stock units)
+                            </span>
+                        }
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Not available in any branch</span>
+                    }
+                </div>
+            </div>
+            
+            <div class="d-flex gap-2">
+                <a href="/Shop" class="btn btn-secondary">Back to Shop</a>
+                @if (ViewBag.Stock > 0)
+                {
+                    <button class="btn btn-primary" onclick="addToCart(@Model.MedicineId, '@Model.BrandName', @ViewBag.Price, @Model.RequiresPrescription.ToString().ToLower())">
+                        Add to Cart
+                    </button>
+                }
+                else
+                {
+                    <button class="btn btn-secondary" disabled>Out of Stock</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+function addToCart(id, name, price, requiresPrescription) {
+    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const existing = cart.find(i => i.id === id);
+    if (existing) {
+        existing.quantity++;
+    } else {
+        cart.push({ id, name, price, quantity: 1, prescriptionUrl: null });
+    }
+    localStorage.setItem('cart', JSON.stringify(cart));
+    
+    if (requiresPrescription) {
+        alert('Added to cart! Please upload prescription during checkout.');
+    } else {
+        alert('Added to cart!');
+    }
+    window.location.href = '/Shop';
+}
+</script>
+}

@@ -41,6 +41,11 @@
                             <span>Customers</span>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Orders" asp-action="Index">
+                            <span>Orders</span>
+                        </a>
+                    </li>
                     @if (User.IsInRole("Manager") || User.IsInRole("Admin"))
                     {
                         <li class="nav-item">
