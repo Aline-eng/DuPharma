@@ -10,10 +10,10 @@
             <h1 class="hero-title">Browse Medicines</h1>
             <div class="row justify-content-center">
                 <div class="col-md-8">
-                    <form method="get" class="hero-search">
-                        <input type="text" name="search" class="form-control" placeholder="Search medicines..." value="@ViewBag.Search">
-                        <button class="btn btn-primary" type="submit">Search</button>
-                    </form>
+                    <div class="hero-search">
+                        <input type="text" id="liveSearch" class="form-control" placeholder="Search medicines..." value="@ViewBag.Search">
+                        <button class="btn btn-primary" onclick="performSearch()">Search</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -21,13 +21,41 @@
 </div>
 
 <div class="container mt-4">
-    <div class="d-flex justify-content-end mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex gap-2 align-items-center">
+            <label class="fw-bold">Filter by Branch:</label>
+            <select id="branchFilter" class="form-select" style="width: auto;" onchange="filterByBranch()">
+                <option value="">All Branches</option>
+                @if (ViewBag.Branches != null)
+                {
+                    foreach (var branch in ViewBag.Branches)
+                    {
+                        if (ViewBag.BranchId == branch.BranchId)
+                        {
+                            <option value="@branch.BranchId" selected>@branch.BranchName</option>
+                        }
+                        else
+                        {
+                            <option value="@branch.BranchId">@branch.BranchName</option>
+                        }
+                    }
+                }
+            </select>
+        </div>
         <button class="btn btn-success" onclick="showCart()">
             <i class="bi bi-cart"></i> Cart (<span id="cartCount">0</span>)
         </button>
     </div>
 
-    <div class="row">
+    <div class="row" id="medicineGrid">
+        @if (!Model.Any())
+        {
+            <div class="col-12 text-center py-5">
+                <i class="bi bi-exclamation-circle" style="font-size: 3rem; color: #999;"></i>
+                <h4 class="mt-3">No medicines available in the selected branch</h4>
+                <p class="text-muted">Try selecting a different branch or check back later</p>
+            </div>
+        }
         @foreach (var medicine in Model)
         {
             <div class="col-md-3 mb-4">
@@ -81,7 +109,20 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
+                <div id="checkoutAlert" class="alert alert-warning d-none"></div>
                 <form id="checkoutForm">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Select Your Branch <span class="text-danger">*</span></label>
+                        <select class="form-select" id="checkoutBranch" required>
+                            <option value="">-- Choose a branch --</option>
+                            @foreach (var branch in ViewBag.Branches)
+                            {
+                                <option value="@branch.BranchId">@branch.BranchName - @branch.Location</option>
+                            }
+                        </select>
+                        <small class="text-muted">Select the branch where you want to pick up your order</small>
+                    </div>
+                    <hr>
                     <div class="mb-3">
                         <label class="form-label">Full Name</label>
                         <input type="text" class="form-control" id="customerName" required>
@@ -132,7 +173,71 @@
 <script>
 const medicinesData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model));
 let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+let searchTimeout;
 updateCartCount();
+
+// Live search functionality
+$('#liveSearch').on('input', function() {
+    clearTimeout(searchTimeout);
+    const query = $(this).val();
+    const branchId = $('#branchFilter').val();
+    
+    if (query.length < 2 && query.length > 0) return;
+    
+    searchTimeout = setTimeout(() => {
+        if (query.length === 0) {
+            window.location.href = '/Shop/Index' + (branchId ? '?branchId=' + branchId : '');
+            return;
+        }
+        
+        $.get('/Shop/SearchLive', { q: query, branchId: branchId }, function(data) {
+            renderMedicines(data);
+        });
+    }, 500);
+});
+
+function performSearch() {
+    const query = $('#liveSearch').val();
+    const branchId = $('#branchFilter').val();
+    window.location.href = '/Shop/Index?search=' + encodeURIComponent(query) + (branchId ? '&branchId=' + branchId : '');
+}
+
+function filterByBranch() {
+    const branchId = $('#branchFilter').val();
+    const search = $('#liveSearch').val();
+    window.location.href = '/Shop/Index?' + (search ? 'search=' + encodeURIComponent(search) + '&' : '') + (branchId ? 'branchId=' + branchId : '');
+}
+
+function renderMedicines(medicines) {
+    const grid = $('#medicineGrid');
+    if (medicines.length === 0) {
+        grid.html('<div class="col-12 text-center py-5"><i class="bi bi-search" style="font-size: 3rem; color: #999;"></i><h4 class="mt-3">No medicines found</h4><p class="text-muted">Try a different search term</p></div>');
+        return;
+    }
+    
+    let html = '';
+    medicines.forEach(m => {
+        html += `
+            <div class="col-md-3 mb-4">
+                <div class="card h-100">
+                    <img src="${m.imageUrl}" class="card-img-top" alt="${m.brandName}">
+                    <div class="card-body">
+                        <h5 class="card-title">${m.brandName}</h5>
+                        <p class="card-text text-muted">${m.genericName}</p>
+                        <p class="card-text">${m.strength} - ${m.form}</p>
+                        <p class="card-text"><strong>$${m.price.toFixed(2)}</strong></p>
+                        ${m.requiresPrescription ? '<span class="badge bg-warning">Prescription Required</span>' : ''}
+                    </div>
+                    <div class="card-footer">
+                        <a href="/Shop/Details/${m.medicineId}" class="btn btn-sm btn-info">Details</a>
+                        <button class="btn btn-sm btn-primary" onclick="addToCart(${m.medicineId}, '${m.brandName}', ${m.price}, ${m.requiresPrescription.toString().toLowerCase()})">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    grid.html(html);
+}
 
 function addToCart(id, name, price, requiresPrescription) {
     if (requiresPrescription) {
@@ -207,11 +312,18 @@ function checkout() {
 }
 
 function placeOrder() {
+    const branchId = parseInt($('#checkoutBranch').val());
+    if (!branchId) {
+        showCheckoutAlert('Please select a branch');
+        return;
+    }
+    
     const order = {
         customerName: $('#customerName').val(),
         customerEmail: $('#customerEmail').val(),
         customerPhone: $('#customerPhone').val(),
         deliveryAddress: $('#deliveryAddress').val(),
+        branchId: branchId,
         items: cart.map(i => ({ medicineId: i.id, quantity: i.quantity, prescriptionImageUrl: i.prescriptionUrl }))
     };
     
@@ -229,8 +341,16 @@ function placeOrder() {
             updateCartCount();
             $('#checkoutModal').modal('hide');
             location.reload();
+        } else {
+            showCheckoutAlert(data.message || 'Some items are not available in the selected branch. Please choose another branch.');
         }
     });
+}
+
+function showCheckoutAlert(message) {
+    const alert = $('#checkoutAlert');
+    alert.text(message).removeClass('d-none');
+    setTimeout(() => alert.addClass('d-none'), 5000);
 }
 </script>
 }
