@@ -78,13 +78,13 @@
             {
                 <header class="top-header">
                     <div class="user-info">
-                        <div class="user-avatar">
-                            @User.Identity.Name?.Substring(0, 2).ToUpper()
-                        </div>
                         <div class="user-details">
                             <div class="user-name">@User.Identity.Name</div>
                             <div class="user-role">@(User.IsInRole("Admin") ? "Admin" : User.IsInRole("Manager") ? "Manager" : "Pharmacist") @if(User.FindFirst("BranchId")?.Value != ""){ <span>| Branch: @User.FindFirst("BranchName")?.Value</span> }</div>
                         </div>
+                    <div class="user-avatar">
+                        @User.Identity.Name?.Substring(0, 2).ToUpper()
+                    </div>
                     </div>
                 </header>
             }

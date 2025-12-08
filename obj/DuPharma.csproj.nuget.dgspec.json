@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\PREACHER\\source\\repos\\DuPharma\\DuPharma.csproj": {}
+    "C:\\Users\\USER\\source\\repos\\DuPharma\\DuPharma.csproj": {}
   },
   "projects": {
-    "C:\\Users\\PREACHER\\source\\repos\\DuPharma\\DuPharma.csproj": {
+    "C:\\Users\\USER\\source\\repos\\DuPharma\\DuPharma.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\PREACHER\\source\\repos\\DuPharma\\DuPharma.csproj",
+        "projectUniqueName": "C:\\Users\\USER\\source\\repos\\DuPharma\\DuPharma.csproj",
         "projectName": "DuPharma",
-        "projectPath": "C:\\Users\\PREACHER\\source\\repos\\DuPharma\\DuPharma.csproj",
-        "packagesPath": "C:\\Users\\PREACHER\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\PREACHER\\source\\repos\\DuPharma\\obj\\",
+        "projectPath": "C:\\Users\\USER\\source\\repos\\DuPharma\\DuPharma.csproj",
+        "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\USER\\source\\repos\\DuPharma\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\PREACHER\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\USER\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,7 +26,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -71,6 +70,10 @@
               "target": "Package",
               "version": "[8.0.0, )"
             },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.5.0, )"
+            },
             "iTextSharp.LGPLv2.Core": {
               "target": "Package",
               "version": "[1.7.1, )"
@@ -87,6 +90,24 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.22, 8.0.22]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[8.0.22, 8.0.22]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.22, 8.0.22]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[8.0.22, 8.0.22]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -95,7 +116,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.307/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
