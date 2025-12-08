@@ -26,6 +26,7 @@ builder.Services.Configure<Microsoft.AspNetCore.Mvc.Razor.RazorViewEngineOptions
 });
 builder.Services.AddScoped<DispenseService>();
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<IPermissionService, PermissionService>();
 
 var app = builder.Build();
 
