@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using DuPharma.Data;
 using DuPharma.Models;
 using System.Security.Claims;
+using DuPharma.Services;
+using DuPharma.Attributes;
 
 namespace DuPharma.Controllers;
 
@@ -104,12 +106,13 @@ public class OrdersController : Controller
         return Json(new { success = true, url = $"/prescriptions/{fileName}" });
     }
 
-    [Authorize(Roles = "Admin,Manager,Pharmacist")]
+    [RequirePermission(Permissions.ViewOrders)]
     public async Task<IActionResult> Index()
     {
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         var user = await _context.Users.FindAsync(userId);
-        var isAdmin = User.IsInRole("Admin");
+        var permissionService = HttpContext.RequestServices.GetRequiredService<IPermissionService>();
+        var hasAllBranchAccess = await User.HasPermissionAsync(permissionService, Permissions.ViewAllBranchOrders);
 
         var query = _context.Orders
             .Include(o => o.OrderItems)
@@ -117,8 +120,8 @@ public class OrdersController : Controller
             .Include(o => o.Branch)
             .AsQueryable();
 
-        // Filter by branch if not admin
-        if (!isAdmin && user?.BranchId != null)
+        // Filter by branch if no all-branch access
+        if (!hasAllBranchAccess && user?.BranchId != null)
         {
             query = query.Where(o => o.BranchId == user.BranchId);
         }
@@ -127,7 +130,7 @@ public class OrdersController : Controller
         return View(orders);
     }
 
-    [Authorize(Roles = "Admin,Manager,Pharmacist")]
+    [RequirePermission(Permissions.ApproveOrders)]
     [HttpPost]
     public async Task<IActionResult> UpdateStatus(int id, string status)
     {
