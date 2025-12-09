@@ -277,10 +277,11 @@
 .login-right {
     flex: 1;
     display: flex;
-    min-width:50%;
+    min-width: 50%;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    position: relative;
 }
 
 .login-card {
@@ -513,7 +514,7 @@
 .back-to-shop-btn {
     position: absolute;
     top: 20px;
-    left: 20px;
+    right: 20px;
     color: rgba(255,255,255,0.9);
     text-decoration: none;
     font-weight: 600;
@@ -529,7 +530,7 @@
 .back-to-shop-btn:hover {
     background-color: rgba(255,255,255,0.2);
     color: #fff;
-    transform: translateX(-5px);
+    transform: translateX(5px);
 }
 
 /* Shop Hero Section */
@@ -609,4 +610,160 @@
 
 .row {
     row-gap: 25px;
+}
+
+
+/* Only cards in the medicine grid to avoid affecting other cards */
+#medicineGrid .card.h-100,
+#medicineGrid .card {
+    border: none;
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+    background: linear-gradient(180deg, #f6f9ff 0%, #ffffff 40%); /* soft top tint */
+    box-shadow: 0 8px 20px rgba(20,34,60,0.08), 0 2px 6px rgba(20,34,60,0.04);
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+
+    /* Lift on hover */
+    #medicineGrid .card.h-100:hover,
+    #medicineGrid .card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 18px 40px rgba(20,34,60,0.12), 0 6px 14px rgba(20,34,60,0.06);
+    }
+
+    /* Image: make it cover, clipped by rounded corners and centered */
+    #medicineGrid .card .card-img-top {
+        height: 170px; /* adjust to taste */
+        object-fit: cover;
+        width: 100%;
+        display: block;
+        transition: transform .3s ease;
+    }
+
+    /* Slight zoom on image hover for subtle motion */
+    #medicineGrid .card:hover .card-img-top {
+        transform: scale(1.03);
+    }
+
+    /* Card body spacing & text */
+    #medicineGrid .card .card-body {
+        padding: 18px 18px 16px;
+        background: transparent;
+    }
+
+    #medicineGrid .card .card-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+        color: #163a57;
+    }
+
+    #medicineGrid .card .card-text.text-muted {
+        font-size: 0. ninerem;
+        margin-bottom: 6px;
+        color: #7b8794;
+    }
+
+    /* Strength/form line */
+    #medicineGrid .card .card-body p.card-text:nth-of-type(2) {
+        color: #5c6b78;
+        font-size: 0.95rem;
+        margin-bottom: 6px;
+    }
+
+    /* Price styling */
+    #medicineGrid .card .card-body p.card-text strong,
+    #medicineGrid .card .card-body .price {
+        display: block;
+        font-size: 1.25rem;
+        color: #12607f; 
+        font-weight: 800;
+        margin-top: 8px;
+    }
+
+    /* Prescription / tags - pill style */
+    #medicineGrid .card .card-body .badge {
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-weight: 600;
+        font-size: 0.78rem;
+        box-shadow: none;
+        vertical-align: middle;
+    }
+
+        /* warning badge  */
+        #medicineGrid .card .card-body .badge.bg-warning {
+            background: #fff6e6;
+            color: #a86b00;
+            border: 1px solid rgba(168,107,0,0.08);
+        }
+
+    /* Footer layout */
+    #medicineGrid .card .card-footer {
+        background: transparent;
+        border-top: none;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 14px;
+    }
+
+        /* Left align small details */
+        #medicineGrid .card .card-footer a,
+        #medicineGrid .card .card-footer button {
+            border-radius: 10px;
+            padding: 8px 12px;
+            font-size: 0.90rem;
+            font-weight: 600;
+            transition: transform .12s ease, box-shadow .12s ease, background-color .12s ease;
+        }
+
+        /* Details button*/
+        #medicineGrid .card .card-footer .btn-info {
+            background: #ffffff;
+            color: #10607f;
+            border: 1px solid rgba(16,96,127,0.08);
+            box-shadow: 0 3px 8px rgba(16,96,127,0.04);
+        }
+
+        /* Primary add-to-cart button */
+        #medicineGrid .card .card-footer .btn-primary {
+            background: linear-gradient(180deg, #1380a0, #0f6280);
+            border: none;
+            color: #fff;
+            box-shadow: 0 6px 18px rgba(15,98,128,0.14);
+        }
+
+        /* Hover and active effects */
+        #medicineGrid .card .card-footer .btn-info:hover {
+            transform: translateY(-2px);
+            background: #f1fbff;
+        }
+
+        #medicineGrid .card .card-footer .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 26px rgba(15,98,128,0.18);
+        }
+
+    /* Small stock text style */
+    #medicineGrid .card .in-stock {
+        color: #6b7a86;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+/* Responsiveness */
+@media (max-width: 576px) {
+    #medicineGrid .card .card-img-top {
+        height: 140px;
+    }
+
+    #medicineGrid .card .card-body {
+        padding: 14px;
+    }
+
+    #medicineGrid .card .card-footer {
+        padding: 10px 12px;
+    }
 }
