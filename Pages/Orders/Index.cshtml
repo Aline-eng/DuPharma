@@ -6,6 +6,21 @@
 <div class="container-fluid mt-4">
     <h2>Customer Orders</h2>
     
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    
     <table class="table table-striped">
         <thead>
             <tr>
@@ -17,6 +32,7 @@
                 <th>Items</th>
                 <th>Total</th>
                 <th>Status</th>
+                <th>Notes</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -51,6 +67,12 @@
                         </span>
                     </td>
                     <td>
+                        @if (!string.IsNullOrEmpty(order.Notes))
+                        {
+                            <small class="text-success">@order.Notes</small>
+                        }
+                    </td>
+                    <td>
                         @if (order.Status == "Pending")
                         {
                             <form method="post" asp-action="UpdateStatus" class="d-inline">
@@ -66,11 +88,38 @@
                         }
                         @if (order.Status == "Approved")
                         {
-                            <form method="post" asp-action="UpdateStatus" class="d-inline">
-                                <input type="hidden" name="id" value="@order.OrderId">
-                                <input type="hidden" name="status" value="Completed">
-                                <button type="submit" class="btn btn-sm btn-primary">Complete</button>
-                            </form>
+                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#completeModal@(order.OrderId)">Complete</button>
+                            
+                            <!-- Complete Order Modal -->
+                            <div class="modal fade" id="completeModal@(order.OrderId)" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Complete Order @order.OrderNumber</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <form method="post" asp-action="UpdateStatus">
+                                            <div class="modal-body">
+                                                <input type="hidden" name="id" value="@order.OrderId">
+                                                <input type="hidden" name="status" value="Completed">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Payment Method</label>
+                                                    <select name="paymentMethod" class="form-select" required>
+                                                        <option value="Cash">Cash</option>
+                                                        <option value="Card">Card</option>
+                                                        <option value="Mobile Money">Mobile Money</option>
+                                                    </select>
+                                                </div>
+                                                <p class="text-muted">This will create a sale record and deduct stock from inventory.</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn btn-primary">Complete Order</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         }
                     </td>
                 </tr>
