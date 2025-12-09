@@ -46,9 +46,27 @@ public class OrdersController : Controller
         if (unavailableItems.Any())
             return Json(new { success = false, message = $"Items not available in selected branch: {string.Join(", ", unavailableItems)}" });
 
+        // Create or find customer
+        var customer = await _context.Customers
+            .FirstOrDefaultAsync(c => c.Phone == request.CustomerPhone);
+        
+        if (customer == null)
+        {
+            customer = new Customer
+            {
+                FullName = request.CustomerName,
+                Phone = request.CustomerPhone,
+                Address = request.DeliveryAddress,
+                NationalId = request.CustomerPhone
+            };
+            _context.Customers.Add(customer);
+            await _context.SaveChangesAsync();
+        }
+
         var order = new Order
         {
             OrderNumber = $"ORD{DateTime.Now:yyyyMMddHHmmss}",
+            CustomerId = customer.CustomerId,
             CustomerName = request.CustomerName,
             CustomerEmail = request.CustomerEmail,
             CustomerPhone = request.CustomerPhone,
@@ -132,14 +150,49 @@ public class OrdersController : Controller
 
     [RequirePermission(Permissions.ApproveOrders)]
     [HttpPost]
-    public async Task<IActionResult> UpdateStatus(int id, string status)
+    public async Task<IActionResult> UpdateStatus(int id, string status, string paymentMethod = "Cash")
     {
-        var order = await _context.Orders.FindAsync(id);
+        var order = await _context.Orders
+            .Include(o => o.OrderItems)
+            .FirstOrDefaultAsync(o => o.OrderId == id);
+        
         if (order == null) return NotFound();
 
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        
         order.Status = status;
         if (status == "Approved")
-            order.ApprovedByUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            order.ApprovedByUserId = userId;
+
+        // Automatically create sale when order is completed
+        if (status == "Completed")
+        {
+            try
+            {
+                var dispenseService = HttpContext.RequestServices.GetRequiredService<DispenseService>();
+                
+                var orderDto = new OrderDto
+                {
+                    CustomerId = order.CustomerId,
+                    PaymentMethod = paymentMethod,
+                    Items = order.OrderItems.Select(oi => new OrderItemDto
+                    {
+                        MedicineId = oi.MedicineId,
+                        Quantity = oi.Quantity
+                    }).ToList()
+                };
+
+                var sale = await dispenseService.DispenseAsync(orderDto, userId);
+                order.Notes = $"Sale created: {sale.InvoiceNumber}";
+                
+                TempData["Success"] = $"Order completed and sale {sale.InvoiceNumber} created successfully!";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Failed to create sale: {ex.Message}";
+                return RedirectToAction(nameof(Index));
+            }
+        }
 
         await _context.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
