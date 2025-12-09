@@ -60,7 +60,7 @@
             </div>
             
             <div class="d-flex gap-2">
-                <a href="/Shop" class="btn btn-secondary">Back to Shop</a>
+                <a href="/Shop/Index" class="btn btn-secondary">Back to Shop</a>
                 @if (ViewBag.Stock > 0)
                 {
                     <button class="btn btn-primary" onclick="addToCart(@Model.MedicineId, '@Model.BrandName', @ViewBag.Price, @Model.RequiresPrescription.ToString().ToLower())">
