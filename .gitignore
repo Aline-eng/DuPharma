@@ -3,13 +3,19 @@
 *.suo
 *.user
 
-## Build
+## Build folders and files
 [Bb]in/
 [Oo]bj/
-**/[Bb]in/**
-**/[Oo]bj/**
+**/[Bb]in/
+**/[Oo]bj/
+**/bin/**
+**/obj/**
 bin/**
 obj/**
+
+## Ignore all files in bin and obj
+[Bb]in
+[Oo]bj
 
 ## SQL files
 database_setup.sql
