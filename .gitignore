@@ -6,6 +6,10 @@
 ## Build
 [Bb]in/
 [Oo]bj/
+**/[Bb]in/**
+**/[Oo]bj/**
+bin/**
+obj/**
 
 ## SQL files
 database_setup.sql
