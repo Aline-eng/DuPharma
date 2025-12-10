@@ -1,7 +1,7 @@
 /* Sidebar Styles */
 .sidebar {
     width: 200px;
-    min-height: 100vh;
+    height: 100vh;
     background-color: #0D182B;
     color: white;
     position: fixed;
@@ -10,6 +10,7 @@
     z-index: 1000;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
 }
 
 .sidebar-header {
@@ -277,10 +278,11 @@
 .login-right {
     flex: 1;
     display: flex;
-    min-width:50%;
+    min-width: 50%;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    position: relative;
 }
 
 .login-card {
@@ -359,5 +361,410 @@
     .login-right {
         flex: 1;
         width: 100%;
+    }
+}
+
+/* Shop Navbar */
+.shop-navbar {
+    background: linear-gradient(135deg, #0D182B 0%, #1B2940 100%);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 15px 0;
+}
+
+.shop-navbar .brand-text {
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.shop-navbar .nav-link {
+    color: rgba(255,255,255,0.9) !important;
+    font-weight: 500;
+    padding: 8px 16px !important;
+    transition: all 0.3s ease;
+}
+
+.shop-navbar .nav-link:hover {
+    color: #fff !important;
+    background-color: rgba(255,255,255,0.1);
+    border-radius: 5px;
+}
+
+.shop-navbar .dropdown-menu {
+    background-color: #1B2940;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.shop-navbar .dropdown-item {
+    color: rgba(255,255,255,0.9);
+    transition: all 0.3s ease;
+}
+
+.shop-navbar .dropdown-item:hover {
+    background-color: rgba(255,255,255,0.1);
+    color: #fff;
+}
+
+.btn-staff-login {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 24px;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-staff-login:hover {
+    background-color: #2980b9;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+}
+
+/* Shop Footer */
+.shop-footer {
+    background: linear-gradient(135deg, #0D182B 0%, #1B2940 100%);
+    color: rgba(255,255,255,0.9);
+    margin-top: 60px;
+}
+
+.footer-heading {
+    color: #fff;
+    font-weight: 700;
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+}
+
+.footer-text {
+    color: rgba(255,255,255,0.8);
+    line-height: 1.6;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links li {
+    margin-bottom: 10px;
+}
+
+.footer-links a {
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: #3498db;
+    padding-left: 5px;
+}
+
+.footer-contact {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-contact li {
+    margin-bottom: 12px;
+    color: rgba(255,255,255,0.8);
+}
+
+.footer-contact i {
+    color: #3498db;
+    margin-right: 10px;
+    width: 20px;
+}
+
+.social-icons {
+    display: flex;
+    gap: 15px;
+}
+
+.social-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255,255,255,0.1);
+    color: #fff;
+    border-radius: 50%;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.social-icon:hover {
+    background-color: #3498db;
+    color: #fff;
+    transform: translateY(-3px);
+}
+
+.footer-divider {
+    border-color: rgba(255,255,255,0.2);
+    margin: 30px 0;
+}
+
+.footer-copyright {
+    color: rgba(255,255,255,0.7);
+}
+
+/* Back to Shop Button */
+.back-to-shop-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: rgba(255,255,255,0.9);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 10px 20px;
+    background-color: rgba(255,255,255,0.1);
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.back-to-shop-btn:hover {
+    background-color: rgba(255,255,255,0.2);
+    color: #fff;
+    transform: translateX(5px);
+}
+
+/* Shop Hero Section */
+.hero-section {
+    background: linear-gradient(rgba(13, 24, 43, 0.7), rgba(13, 24, 43, 0.7)), url('/images/doc.jpg');
+    background-size: cover;
+    background-position: center;
+    padding: 50px 0;
+    color: white;
+}
+
+.hero-overlay {
+    width: 100%;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 25px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.hero-search {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.hero-search .form-control {
+    padding: 15px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: none;
+}
+
+.hero-search .btn {
+    padding: 15px 30px;
+    font-size: 16px;
+    border-radius: 8px;
+    background-color: #3498db;
+    border: none;
+}
+
+.hero-search .btn:hover {
+    background-color: #2980b9;
+}
+
+/* Shop Cards */
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+.card-img-top {
+    height: 180px;
+    object-fit: cover;
+}
+
+.card-body {
+    padding: 15px;
+}
+
+.card-title {
+    font-size: 1rem;
+    margin-bottom: 8px;
+}
+
+.card-text {
+    font-size: 0.875rem;
+    margin-bottom: 5px;
+}
+
+.row {
+    row-gap: 25px;
+}
+
+
+/* Only cards in the medicine grid to avoid affecting other cards */
+#medicineGrid .card.h-100,
+#medicineGrid .card {
+    border: none;
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+    background: linear-gradient(180deg, #f6f9ff 0%, #ffffff 40%); /* soft top tint */
+    box-shadow: 0 8px 20px rgba(20,34,60,0.08), 0 2px 6px rgba(20,34,60,0.04);
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+
+    /* Lift on hover */
+    #medicineGrid .card.h-100:hover,
+    #medicineGrid .card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 18px 40px rgba(20,34,60,0.12), 0 6px 14px rgba(20,34,60,0.06);
+    }
+
+    /* Image: make it cover, clipped by rounded corners and centered */
+    #medicineGrid .card .card-img-top {
+        height: 170px; /* adjust to taste */
+        object-fit: cover;
+        width: 100%;
+        display: block;
+        transition: transform .3s ease;
+    }
+
+    /* Slight zoom on image hover for subtle motion */
+    #medicineGrid .card:hover .card-img-top {
+        transform: scale(1.03);
+    }
+
+    /* Card body spacing & text */
+    #medicineGrid .card .card-body {
+        padding: 18px 18px 16px;
+        background: transparent;
+    }
+
+    #medicineGrid .card .card-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+        color: #163a57;
+    }
+
+    #medicineGrid .card .card-text.text-muted {
+        font-size: 0. ninerem;
+        margin-bottom: 6px;
+        color: #7b8794;
+    }
+
+    /* Strength/form line */
+    #medicineGrid .card .card-body p.card-text:nth-of-type(2) {
+        color: #5c6b78;
+        font-size: 0.95rem;
+        margin-bottom: 6px;
+    }
+
+    /* Price styling */
+    #medicineGrid .card .card-body p.card-text strong,
+    #medicineGrid .card .card-body .price {
+        display: block;
+        font-size: 1.25rem;
+        color: #12607f; 
+        font-weight: 800;
+        margin-top: 8px;
+    }
+
+    /* Prescription / tags - pill style */
+    #medicineGrid .card .card-body .badge {
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-weight: 600;
+        font-size: 0.78rem;
+        box-shadow: none;
+        vertical-align: middle;
+    }
+
+        /* warning badge  */
+        #medicineGrid .card .card-body .badge.bg-warning {
+            background: #fff6e6;
+            color: #a86b00;
+            border: 1px solid rgba(168,107,0,0.08);
+        }
+
+    /* Footer layout */
+    #medicineGrid .card .card-footer {
+        background: transparent;
+        border-top: none;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 14px;
+    }
+
+        /* Left align small details */
+        #medicineGrid .card .card-footer a,
+        #medicineGrid .card .card-footer button {
+            border-radius: 10px;
+            padding: 8px 12px;
+            font-size: 0.90rem;
+            font-weight: 600;
+            transition: transform .12s ease, box-shadow .12s ease, background-color .12s ease;
+        }
+
+        /* Details button*/
+        #medicineGrid .card .card-footer .btn-info {
+            background: #ffffff;
+            color: #10607f;
+            border: 1px solid rgba(16,96,127,0.08);
+            box-shadow: 0 3px 8px rgba(16,96,127,0.04);
+        }
+
+        /* Primary add-to-cart button */
+        #medicineGrid .card .card-footer .btn-primary {
+            background: linear-gradient(180deg, #1380a0, #0f6280);
+            border: none;
+            color: #fff;
+            box-shadow: 0 6px 18px rgba(15,98,128,0.14);
+        }
+
+        /* Hover and active effects */
+        #medicineGrid .card .card-footer .btn-info:hover {
+            transform: translateY(-2px);
+            background: #f1fbff;
+        }
+
+        #medicineGrid .card .card-footer .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 26px rgba(15,98,128,0.18);
+        }
+
+    /* Small stock text style */
+    #medicineGrid .card .in-stock {
+        color: #6b7a86;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+/* Responsiveness */
+@media (max-width: 576px) {
+    #medicineGrid .card .card-img-top {
+        height: 140px;
+    }
+
+    #medicineGrid .card .card-body {
+        padding: 14px;
+    }
+
+    #medicineGrid .card .card-footer {
+        padding: 10px 12px;
     }
 }

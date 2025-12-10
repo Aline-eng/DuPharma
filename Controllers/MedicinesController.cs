@@ -3,17 +3,21 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using DuPharma.Data;
 using DuPharma.Models;
+using DuPharma.Attributes;
+using DuPharma.Services;
 
 namespace DuPharma.Controllers;
 
-[Authorize]
+[RequirePermission(Permissions.ViewMedicines)]
 public class MedicinesController : Controller
 {
     private readonly AppDbContext _context;
+    private readonly IPermissionService _permissionService;
 
-    public MedicinesController(AppDbContext context)
+    public MedicinesController(AppDbContext context, IPermissionService permissionService)
     {
         _context = context;
+        _permissionService = permissionService;
     }
 
     public async Task<IActionResult> Index()
@@ -36,16 +40,16 @@ public class MedicinesController : Controller
         return View(medicines);
     }
 
+    [RequirePermission(Permissions.CreateMedicines)]
     public IActionResult Create()
     {
-        if (!IsManagerOrAdmin()) return Forbid();
         return View();
     }
 
     [HttpPost]
+    [RequirePermission(Permissions.CreateMedicines)]
     public async Task<IActionResult> Create(Medicine medicine)
     {
-        if (!IsManagerOrAdmin()) return Forbid();
         
         if (ModelState.IsValid)
         {
@@ -56,9 +60,9 @@ public class MedicinesController : Controller
         return View(medicine);
     }
 
+    [RequirePermission(Permissions.EditMedicines)]
     public async Task<IActionResult> Edit(int id)
     {
-        if (!IsManagerOrAdmin()) return Forbid();
         
         var medicine = await _context.Medicines.FindAsync(id);
         if (medicine == null) return NotFound();
@@ -66,9 +70,9 @@ public class MedicinesController : Controller
     }
 
     [HttpPost]
+    [RequirePermission(Permissions.EditMedicines)]
     public async Task<IActionResult> Edit(int id, Medicine medicine)
     {
-        if (!IsManagerOrAdmin()) return Forbid();
         
         if (id != medicine.MedicineId) return NotFound();
 
@@ -81,9 +85,9 @@ public class MedicinesController : Controller
         return View(medicine);
     }
 
+    [RequirePermission(Permissions.DeleteMedicines)]
     public async Task<IActionResult> Delete(int id)
     {
-        if (!IsAdmin()) return Forbid();
         
         var medicine = await _context.Medicines
             .Include(m => m.Batches)
@@ -94,9 +98,9 @@ public class MedicinesController : Controller
     }
 
     [HttpPost, ActionName("Delete")]
+    [RequirePermission(Permissions.DeleteMedicines)]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        if (!IsAdmin()) return Forbid();
         
         var medicine = await _context.Medicines.FindAsync(id);
         if (medicine != null)
@@ -107,6 +111,7 @@ public class MedicinesController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [RequirePermission(Permissions.ViewMedicineBatches)]
     public async Task<IActionResult> Batches(int id)
     {
         var medicine = await _context.Medicines
@@ -118,8 +123,7 @@ public class MedicinesController : Controller
         return View(medicine);
     }
 
-    private bool IsAdmin() => User.IsInRole("Admin");
-    private bool IsManagerOrAdmin() => User.IsInRole("Admin") || User.IsInRole("Manager");
+
 }
 
 public class MedicineListViewModel

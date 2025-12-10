@@ -4,20 +4,23 @@ using Microsoft.EntityFrameworkCore;
 using DuPharma.Data;
 using DuPharma.Models;
 using DuPharma.Services;
+using DuPharma.Attributes;
 using System.Security.Claims;
 
 namespace DuPharma.Controllers;
 
-[Authorize]
+[RequirePermission(Permissions.ViewSales)]
 public class SalesController : Controller
 {
     private readonly AppDbContext _context;
     private readonly DispenseService _dispenseService;
+    private readonly IPermissionService _permissionService;
 
-    public SalesController(AppDbContext context, DispenseService dispenseService)
+    public SalesController(AppDbContext context, DispenseService dispenseService, IPermissionService permissionService)
     {
         _context = context;
         _dispenseService = dispenseService;
+        _permissionService = permissionService;
     }
 
     public async Task<IActionResult> Index()
@@ -31,7 +34,8 @@ public class SalesController : Controller
             .Include(s => s.Branch)
             .AsQueryable();
         
-        if (!User.IsInRole("Admin") && user?.BranchId != null)
+        var hasAllBranchAccess = await User.HasPermissionAsync(_permissionService, Permissions.ViewAllBranchSales);
+        if (!hasAllBranchAccess && user?.BranchId != null)
         {
             query = query.Where(s => s.BranchId == user.BranchId);
         }
@@ -40,6 +44,7 @@ public class SalesController : Controller
         return View(sales);
     }
 
+    [RequirePermission(Permissions.CreateSales)]
     public async Task<IActionResult> Create()
     {
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
@@ -66,6 +71,7 @@ public class SalesController : Controller
     }
 
     [HttpPost]
+    [RequirePermission(Permissions.CreateSales)]
     public async Task<IActionResult> Create(CreateSaleViewModel model)
     {
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);

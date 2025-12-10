@@ -1,0 +1,107 @@
+@model DuPharma.Models.ContactReplyViewModel
+@{
+    ViewData["Title"] = "Reply to Message";
+}
+
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-reply me-2"></i>Reply to Message</h2>
+        <a href="@Url.Action("Details", new { id = Model.Id })" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Message
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Compose Reply</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Reply" method="post">
+                        <input asp-for="Id" type="hidden">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-4">
+                            <label class="form-label">To:</label>
+                            <div class="form-control-plaintext">
+                                <strong>@Model.FullName</strong> &lt;@Model.Email&gt;
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Subject:</label>
+                            <div class="form-control-plaintext">
+                                Re: @Model.Subject
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Reply" class="form-label">Your Reply <span class="text-danger">*</span></label>
+                            <textarea asp-for="Reply" class="form-control" rows="8" placeholder="Type your reply here..."></textarea>
+                            <span asp-validation-for="Reply" class="text-danger"></span>
+                            <div class="form-text">This reply will be sent to the customer's email address.</div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-send"></i> Send Reply
+                            </button>
+                            <a href="@Url.Action("Details", new { id = Model.Id })" class="btn btn-secondary">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Original Message</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>From:</strong> @Model.FullName<br>
+                        <strong>Email:</strong> @Model.Email<br>
+                        @if (!string.IsNullOrEmpty(Model.Phone))
+                        {
+                            <strong>Phone:</strong> @Model.Phone<br>
+                        }
+                        <strong>Date:</strong> @Model.CreatedAt.ToString("MMM dd, yyyy HH:mm")
+                    </div>
+                    <div class="mb-3">
+                        <strong>Subject:</strong><br>
+                        @Model.Subject
+                    </div>
+                    <div>
+                        <strong>Message:</strong><br>
+                        <div class="bg-light p-2 rounded small" style="max-height: 200px; overflow-y: auto;">
+                            @Model.Message
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-lightbulb"></i> Reply Tips</h6>
+                </div>
+                <div class="card-body">
+                    <ul class="small mb-0">
+                        <li>Be professional and courteous</li>
+                        <li>Address their specific questions</li>
+                        <li>Provide clear and helpful information</li>
+                        <li>Include contact details if needed</li>
+                        <li>Proofread before sending</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

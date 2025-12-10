@@ -2,18 +2,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using DuPharma.Data;
+using DuPharma.Models;
+using DuPharma.Attributes;
+using DuPharma.Services;
 using System.Security.Claims;
 
 namespace DuPharma.Controllers;
 
-[Authorize]
+[RequirePermission(Permissions.ViewDashboard)]
 public class HomeController : Controller
 {
     private readonly AppDbContext _context;
+    private readonly IPermissionService _permissionService;
 
-    public HomeController(AppDbContext context)
+    public HomeController(AppDbContext context, IPermissionService permissionService)
     {
         _context = context;
+        _permissionService = permissionService;
     }
 
     public async Task<IActionResult> Index()
@@ -35,9 +40,9 @@ public class HomeController : Controller
     {
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         var user = await _context.Users.FindAsync(userId);
-        var isAdmin = User.IsInRole("Admin");
+        var hasAllBranchAccess = await User.HasPermissionAsync(_permissionService, Permissions.ViewAllBranchSales);
         
-        if (isAdmin)
+        if (hasAllBranchAccess)
         {
             // Admin sees low stock per branch
             return await _context.Branches
@@ -80,7 +85,8 @@ public class HomeController : Controller
         var query = _context.Batches
             .Where(b => b.ExpiryDate <= threeMonthsFromNow && b.ExpiryDate > DateTime.Now && b.QuantityOnHand > 0);
         
-        if (!User.IsInRole("Admin") && user?.BranchId != null)
+        var hasAllBranchAccess = await User.HasPermissionAsync(_permissionService, Permissions.ViewAllBranchSales);
+        if (!hasAllBranchAccess && user?.BranchId != null)
         {
             query = query.Where(b => b.BranchId == user.BranchId);
         }
@@ -107,7 +113,8 @@ public class HomeController : Controller
         var query = _context.SaleItems
             .Where(si => si.Sale.SaleDate >= thirtyDaysAgo);
         
-        if (!User.IsInRole("Admin") && user?.BranchId != null)
+        var hasAllBranchAccess = await User.HasPermissionAsync(_permissionService, Permissions.ViewAllBranchSales);
+        if (!hasAllBranchAccess && user?.BranchId != null)
         {
             query = query.Where(si => si.Sale.BranchId == user.BranchId);
         }
@@ -132,7 +139,8 @@ public class HomeController : Controller
         
         var query = _context.Sales.Where(s => s.SaleDate.Date == DateTime.Today);
         
-        if (!User.IsInRole("Admin") && user?.BranchId != null)
+        var hasAllBranchAccess = await User.HasPermissionAsync(_permissionService, Permissions.ViewAllBranchSales);
+        if (!hasAllBranchAccess && user?.BranchId != null)
         {
             query = query.Where(s => s.BranchId == user.BranchId);
         }

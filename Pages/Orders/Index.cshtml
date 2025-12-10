@@ -1,0 +1,129 @@
+@model IEnumerable<DuPharma.Models.Order>
+@{
+    ViewData["Title"] = "Orders Management";
+}
+
+<div class="container-fluid mt-4">
+    <h2>Customer Orders</h2>
+    
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Order #</th>
+                <th>Branch</th>
+                <th>Customer</th>
+                <th>Phone</th>
+                <th>Date</th>
+                <th>Items</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Notes</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model)
+            {
+                <tr>
+                    <td>@order.OrderNumber</td>
+                    <td>
+                        <span class="badge bg-primary">@order.Branch.BranchName</span>
+                    </td>
+                    <td>
+                        @order.CustomerName<br>
+                        <small class="text-muted">@order.CustomerEmail</small>
+                    </td>
+                    <td>@order.CustomerPhone</td>
+                    <td>@order.OrderDate.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>
+                        @foreach (var item in order.OrderItems)
+                        {
+                            <div>@item.Medicine.BrandName x @item.Quantity</div>
+                            @if (!string.IsNullOrEmpty(item.PrescriptionImageUrl))
+                            {
+                                <a href="@item.PrescriptionImageUrl" target="_blank" class="badge bg-info">View Prescription</a>
+                            }
+                        }
+                    </td>
+                    <td>$@order.TotalAmount.ToString("F2")</td>
+                    <td>
+                        <span class="badge bg-@(order.Status == "Pending" ? "warning" : order.Status == "Approved" ? "success" : order.Status == "Completed" ? "primary" : "danger")">
+                            @order.Status
+                        </span>
+                    </td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(order.Notes))
+                        {
+                            <small class="text-success">@order.Notes</small>
+                        }
+                    </td>
+                    <td>
+                        @if (order.Status == "Pending")
+                        {
+                            <form method="post" asp-action="UpdateStatus" class="d-inline">
+                                <input type="hidden" name="id" value="@order.OrderId">
+                                <input type="hidden" name="status" value="Approved">
+                                <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                            </form>
+                            <form method="post" asp-action="UpdateStatus" class="d-inline">
+                                <input type="hidden" name="id" value="@order.OrderId">
+                                <input type="hidden" name="status" value="Rejected">
+                                <button type="submit" class="btn btn-sm btn-danger">Reject</button>
+                            </form>
+                        }
+                        @if (order.Status == "Approved")
+                        {
+                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#completeModal@(order.OrderId)">Complete</button>
+                            
+                            <!-- Complete Order Modal -->
+                            <div class="modal fade" id="completeModal@(order.OrderId)" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Complete Order @order.OrderNumber</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <form method="post" asp-action="UpdateStatus">
+                                            <div class="modal-body">
+                                                <input type="hidden" name="id" value="@order.OrderId">
+                                                <input type="hidden" name="status" value="Completed">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Payment Method</label>
+                                                    <select name="paymentMethod" class="form-select" required>
+                                                        <option value="Cash">Cash</option>
+                                                        <option value="Card">Card</option>
+                                                        <option value="Mobile Money">Mobile Money</option>
+                                                    </select>
+                                                </div>
+                                                <p class="text-muted">This will create a sale record and deduct stock from inventory.</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn btn-primary">Complete Order</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

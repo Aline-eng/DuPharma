@@ -88,6 +88,32 @@
   - Uses `DispenseService` for FEFO allocation
 - **Receipt**: Displays sale receipt with items and totals
 
+#### ShopController.cs
+**Public Access** (No authentication required)
+- **Index**: Customer-facing medicine catalog with search
+  - Displays medicines with images, prices, descriptions
+  - Shows only in-stock items
+  - Prescription requirement badges
+- **Details**: Detailed medicine information page
+  - Full description, dosage, form
+  - Pricing and availability
+  - Add to cart functionality
+
+#### OrdersController.cs
+**Mixed Access** (Public for customers, authenticated for staff)
+- **Create (POST)**: Process customer orders
+  - Accepts order with customer details
+  - Creates order with items
+  - Generates order number
+- **UploadPrescription (POST)**: Upload prescription images
+  - Stores files in wwwroot/prescriptions
+  - Returns file URL
+- **Index (GET)**: Staff order management (authenticated)
+  - Lists all customer orders
+  - Shows prescription uploads
+  - Order status tracking
+- **UpdateStatus (POST)**: Approve/reject/complete orders (authenticated)
+
 #### UsersController.cs
 **Role-based**: Admin only
 - **Index**: Lists all users with branch and role
@@ -120,6 +146,16 @@
 #### Entities.cs
 Contains all domain entities:
 
+**Order**
+- OrderId, OrderNumber, CustomerId, CustomerName, CustomerEmail, CustomerPhone, DeliveryAddress
+- OrderDate, TotalAmount, Status (Pending/Approved/Rejected/Completed), BranchId, ApprovedByUserId, Notes
+- Navigation: Customer, Branch, ApprovedByUser
+- Collections: OrderItems
+
+**OrderItem**
+- OrderItemId, OrderId, MedicineId, Quantity, UnitPrice, SubTotal, PrescriptionImageUrl
+- Navigation: Order, Medicine
+
 **Branch**
 - BranchId, BranchName, Location
 - Collections: Users, Sales, Batches
@@ -130,6 +166,7 @@ Contains all domain entities:
 
 **Medicine**
 - MedicineId, GenericName, BrandName, Strength, Form, Unit, ReorderLevel
+- Description, ImageUrl, RequiresPrescription (shop features)
 - Collections: Batches, PrescriptionItems
 
 **Batch**
@@ -235,6 +272,30 @@ Contains all domain entities:
 - **Create.cshtml**: POS system with medicine search, quantity input, customer selection, payment method
 - **Receipt.cshtml**: Printable sale receipt with items, totals, invoice details
 
+#### Shop/
+**Public pages** (uses _ShopLayout.cshtml)
+- **Index.cshtml**: Customer medicine catalog
+  - Hero section with background image and search
+  - Medicine cards (4 per row) with images, prices, prescription badges
+  - Shopping cart modal with localStorage
+  - Checkout modal with customer form
+  - Prescription upload modal
+  - JavaScript for cart management and order placement
+- **Details.cshtml**: Medicine detail page
+  - Large image, full description
+  - Dosage information
+  - Add to cart button
+  - Stock availability (for staff reference)
+
+#### Orders/
+**Staff only**
+- **Index.cshtml**: Order management dashboard
+  - Table of customer orders
+  - Order details and items
+  - Prescription image links
+  - Approve/Reject/Complete buttons
+  - Status badges
+
 #### Users/
 **Admin only**
 - **Index.cshtml**: User list with name, email, branch, role, status
@@ -244,7 +305,13 @@ Contains all domain entities:
 #### Shared/
 - **_Layout.cshtml**: Master layout with sidebar navigation, user info header
   - Conditional menu items based on role
+  - Orders menu item
   - Logout button
+- **_ShopLayout.cshtml**: Public shop layout
+  - Navbar with shop branding
+  - Link to staff login
+  - Footer
+  - No authentication required
 - **_RoleActions.cshtml**: Partial view for role-based action buttons
 - **_ValidationScriptsPartial.cshtml**: Client-side validation scripts
 
@@ -285,6 +352,31 @@ Third-party libraries:
 - **DupharmaIcon.svg**: Application logo
 - **dupharmaLogin.svg**: Login page illustration
 - **favicon.ico**: Browser tab icon
+- **doc.jpg**: Hero section background for shop
+- **medicine-default.png**: Default medicine image
+- **[medicine-name].jpg**: Individual medicine images
+
+#### prescriptions/
+- Customer-uploaded prescription images (auto-generated folder)
+
+---
+
+---
+
+## SQL Migration Scripts
+
+### AddShopFeatures.sql
+- Adds Description, ImageUrl, RequiresPrescription columns to Medicines
+- Creates Orders and OrderItems tables
+- Updates sample medicine data with descriptions
+
+### UpdateMedicineImages.sql
+- Updates ImageUrl for all medicines
+- Maps medicine names to image files
+
+### FixNullColumns.sql
+- Fixes NULL values in new Medicine columns
+- Sets default values for existing records
 
 ---
 
@@ -321,3 +413,11 @@ Third-party libraries:
 - StockMovements track all inventory changes
 - AuditLogs track critical operations
 - Reference to source transaction
+
+### Customer Shop Features
+- Public access without authentication
+- Shopping cart stored in browser localStorage
+- Prescription upload for controlled medicines
+- Order workflow: Browse → Cart → Checkout → Staff Approval
+- Default landing page for public users
+- Staff login accessible from shop navbar
