@@ -1,5 +1,8 @@
 # DuPharma API Documentation
 
+Run The Application : 
+--start /min dotnet run
+
 Base URL: `https://localhost:5001/api` or `http://localhost:5000/api`
 
 Swagger UI: `https://localhost:5001/swagger`
