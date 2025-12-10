@@ -58,7 +58,7 @@
     <script>
         function addToCart(medicineId) {
             // AJAX call to add medicine to cart
-            $.get('/api/medicines', { q: '' }, function(data) {
+            $.get('/api/MedicinesApi/search', { q: '' }, function(data) {
                 var medicine = data.find(m => m.medicineId === medicineId);
                 if (medicine) {
                     alert('Added ' + medicine.genericName + ' to cart');

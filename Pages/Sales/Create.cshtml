@@ -95,7 +95,7 @@
         });
 
         function searchMedicines(query) {
-            $.get('/api/medicines', { q: query }, function(data) {
+            $.get('/api/MedicinesApi/search', { q: query }, function(data) {
                 let html = '<div class="list-group">';
                 data.forEach(function(medicine) {
                     html += `<a href="#" class="list-group-item list-group-item-action" onclick="addMedicine(${medicine.medicineId}, '${medicine.genericName}', ${medicine.price}, ${medicine.availableStock})">
