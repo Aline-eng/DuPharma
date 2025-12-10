@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - DuPharma Pharmacy</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark shop-navbar">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/Shop">
+                <img src="~/DupharmaIcon.svg" alt="DuPharma" height="35" class="me-2">
+                <span class="brand-text">DuPharma Pharmacy</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" title="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Shop/About">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Shop/Index">
+                            <i class="bi bi-capsule"></i> Browse Medicines
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-building"></i> Branches
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/Shop/Index?branchId=1">Main Branch</a></li>
+                            <li><a class="dropdown-item" href="/Shop/Index?branchId=2">North Branch</a></li>
+                            <li><a class="dropdown-item" href="/Shop/Index?branchId=3">South Branch</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/Shop/Index">All Branches</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Shop/Contact">Contact Us</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <a href="/Account/Login" class="btn btn-staff-login">Staff Login</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <footer class="shop-footer">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5 class="footer-heading">DuPharma Pharmacy</h5>
+                    <p class="footer-text">Your trusted partner in health and wellness. Quality medicines, professional service.</p>
+                    <div class="social-icons mt-3">
+                        <a href="#" class="social-icon" title="Facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="social-icon" title="Twitter"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="social-icon" title="Instagram"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="social-icon" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 class="footer-heading">Quick Links</h5>
+                    <ul class="footer-links">
+                        <li><a href="/Shop/Home">Home</a></li>
+                        <li><a href="/Shop">Shop</a></li>
+                        <li><a href="/Shop/About">About Us</a></li>
+                        <li><a href="/Shop/Contact">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 class="footer-heading">Contact Information</h5>
+                    <ul class="footer-contact">
+                        <li><i class="bi bi-geo-alt"></i> 123 Medical Street, Health City</li>
+                        <li><i class="bi bi-telephone"></i> +250 789 252 719</li>
+                        <li><i class="bi bi-envelope"></i> info@dupharma.com</li>
+                        <li><i class="bi bi-clock"></i> Mon-Sat: 8AM - 10PM</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="footer-divider">
+            <div class="text-center footer-copyright">
+                <p>&copy; 2025 DuPharma Pharmacy. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

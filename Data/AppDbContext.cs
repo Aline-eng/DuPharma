@@ -19,6 +19,11 @@ public class AppDbContext : DbContext
     public DbSet<PrescriptionItem> PrescriptionItems { get; set; }
     public DbSet<StockMovement> StockMovements { get; set; }
     public DbSet<AuditLog> AuditLogs { get; set; }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
+    public DbSet<Permission> Permissions { get; set; }
+    public DbSet<UserPermission> UserPermissions { get; set; }
+    public DbSet<ContactMessage> ContactMessages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -126,5 +131,69 @@ public class AppDbContext : DbContext
             .WithMany(u => u.AuditLogs)
             .HasForeignKey(al => al.UserId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<Order>()
+            .HasOne(o => o.Customer)
+            .WithMany()
+            .HasForeignKey(o => o.CustomerId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.Entity<Order>()
+            .HasOne(o => o.Branch)
+            .WithMany()
+            .HasForeignKey(o => o.BranchId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<Order>()
+            .HasOne(o => o.ApprovedByUser)
+            .WithMany()
+            .HasForeignKey(o => o.ApprovedByUserId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.Entity<OrderItem>()
+            .HasOne(oi => oi.Order)
+            .WithMany(o => o.OrderItems)
+            .HasForeignKey(oi => oi.OrderId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<OrderItem>()
+            .HasOne(oi => oi.Medicine)
+            .WithMany()
+            .HasForeignKey(oi => oi.MedicineId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Permission relationships
+        builder.Entity<UserPermission>()
+            .HasOne(up => up.User)
+            .WithMany(u => u.UserPermissions)
+            .HasForeignKey(up => up.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<UserPermission>()
+            .HasOne(up => up.Permission)
+            .WithMany(p => p.UserPermissions)
+            .HasForeignKey(up => up.PermissionId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<UserPermission>()
+            .HasOne(up => up.GrantedByUser)
+            .WithMany()
+            .HasForeignKey(up => up.GrantedByUserId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        // ContactMessage relationships
+        builder.Entity<ContactMessage>()
+            .HasOne(cm => cm.RepliedByUser)
+            .WithMany()
+            .HasForeignKey(cm => cm.RepliedByUserId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.Entity<ContactMessage>()
+            .HasIndex(cm => cm.CreatedAt)
+            .HasDatabaseName("IX_ContactMessage_CreatedAt");
+
+        builder.Entity<ContactMessage>()
+            .HasIndex(cm => cm.IsReplied)
+            .HasDatabaseName("IX_ContactMessage_IsReplied");
     }
 }
