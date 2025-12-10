@@ -3,9 +3,9 @@
 Run The Application : 
 --start /min dotnet run
 
-Base URL: `https://localhost:5001/api` or `http://localhost:5000/api`
+Base URL: `https://localhost:5143/api` or `http://localhost:5143/api`
 
-Swagger UI: `https://localhost:5001/swagger`
+Swagger UI: `https://localhost:5143/swagger`
 
 ## Authentication
 Currently, the API endpoints are open. Add `[Authorize]` attributes to controllers for authentication.
