@@ -9,12 +9,13 @@ using System.Security.Claims;
 namespace DuPharma.Controllers;
 
 [RequirePermission(Permissions.ViewContactMessages)]
-public class ContactMessagesController : Controller
+public class ContactMessagesController : BaseController
 {
     private readonly AppDbContext _context;
     private readonly IEmailService _emailService;
 
     public ContactMessagesController(AppDbContext context, IEmailService emailService)
+        : base(context)
     {
         _context = context;
         _emailService = emailService;
@@ -24,7 +25,15 @@ public class ContactMessagesController : Controller
     {
         var query = _context.ContactMessages
             .Include(cm => cm.RepliedByUser)
+            .Include(cm => cm.Branch)
             .AsQueryable();
+
+        // Filter by user's branch if not admin
+        var userBranchId = GetCurrentUserBranchId();
+        if (userBranchId.HasValue)
+        {
+            query = query.Where(cm => cm.BranchId == userBranchId.Value || cm.BranchId == null);
+        }
 
         switch (filter.ToLower())
         {
@@ -44,9 +53,18 @@ public class ContactMessagesController : Controller
             .ToListAsync();
 
         ViewBag.Filter = filter;
-        ViewBag.PendingCount = await _context.ContactMessages.CountAsync(cm => !cm.IsReplied);
-        ViewBag.RepliedCount = await _context.ContactMessages.CountAsync(cm => cm.IsReplied);
-        ViewBag.TotalCount = await _context.ContactMessages.CountAsync();
+
+        // Filter counts by user's branch if not admin
+        var countQuery = _context.ContactMessages.AsQueryable();
+        if (userBranchId.HasValue)
+        {
+            countQuery = countQuery.Where(cm => cm.BranchId == userBranchId.Value || cm.BranchId == null);
+        }
+
+        ViewBag.PendingCount = await countQuery.CountAsync(cm => !cm.IsReplied);
+        ViewBag.RepliedCount = await countQuery.CountAsync(cm => cm.IsReplied);
+        ViewBag.TotalCount = await countQuery.CountAsync();
+        ViewBag.PendingContactMessages = await countQuery.CountAsync(cm => !cm.IsReplied);
 
         return View(messages);
     }
@@ -59,6 +77,13 @@ public class ContactMessagesController : Controller
 
         if (message == null)
             return NotFound();
+
+        // Mark as read if not already read
+        if (!message.IsRead)
+        {
+            message.IsRead = true;
+            await _context.SaveChangesAsync();
+        }
 
         return View(message);
     }
@@ -103,6 +128,7 @@ public class ContactMessagesController : Controller
             message.IsReplied = true;
             message.RepliedAt = DateTime.Now;
             message.RepliedByUserId = userId;
+            message.IsRead = true; // Mark as read when replying
 
             await _context.SaveChangesAsync();
 

@@ -16,7 +16,11 @@ public class ShopController : Controller
 
     public IActionResult Home() => View();
     public IActionResult About() => View();
-    public IActionResult Contact() => View(new ContactFormViewModel());
+    public IActionResult Contact()
+    {
+        ViewBag.Branches = _context.Branches.Select(b => new { b.BranchId, b.BranchName }).ToList();
+        return View(new ContactFormViewModel());
+    }
 
     [HttpPost]
     public IActionResult Contact(ContactFormViewModel model)
@@ -31,6 +35,7 @@ public class ShopController : Controller
 
         if (!ModelState.IsValid)
         {
+            ViewBag.Branches = _context.Branches.Select(b => new { b.BranchId, b.BranchName }).ToList();
             TempData["Error"] = "Please fill in all required fields correctly.";
             return View(model);
         }
@@ -44,6 +49,7 @@ public class ShopController : Controller
                 Phone = model.Phone ?? string.Empty,
                 Subject = model.Subject,
                 Message = model.Message,
+                BranchId = model.BranchId,
                 CreatedAt = DateTime.Now
             };
 

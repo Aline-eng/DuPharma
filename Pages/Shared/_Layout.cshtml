@@ -9,6 +9,9 @@
 </head>
 <body>
     <div class="d-flex">
+        <!-- Mobile Overlay -->
+        <div class="mobile-overlay" id="mobileOverlay"></div>
+
         <!-- Sidebar -->
         <nav class="sidebar">
             <div class="sidebar-header">
@@ -59,16 +62,20 @@
                             <span>Reports</span>
                         </a>
                     </li>
+                    @if (User.IsInRole("Manager") || User.IsInRole("Admin"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="ContactMessages" asp-action="Index">
+                                <span>Contact Messages</span>
+                                @await Component.InvokeAsync("PendingContactMessages")
+                            </a>
+                        </li>
+                    }
                     @if (User.IsInRole("Admin"))
                     {
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Users" asp-action="Index">
                                 <span>Users</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="ContactMessages" asp-action="Index">
-                                <span>Contact Messages</span>
                             </a>
                         </li>
                     }
@@ -87,6 +94,11 @@
             @if (User.Identity!.IsAuthenticated)
             {
                 <header class="top-header">
+                    <button class="hamburger-menu d-md-none" id="sidebarToggle">
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                    </button>
                     <div class="user-info">
                         <div class="user-details">
                             <div class="user-name">@User.Identity.Name</div>

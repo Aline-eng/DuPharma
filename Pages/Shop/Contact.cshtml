@@ -92,6 +92,20 @@
                             <span asp-validation-for="Phone" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
+                            <label asp-for="BranchId" class="form-label">Branch <span class="text-danger">*</span></label>
+                            <select asp-for="BranchId" class="form-select">
+                                <option value="">Select a branch</option>
+                                @if (ViewBag.Branches != null)
+                                {
+                                    foreach (var branch in ViewBag.Branches)
+                                    {
+                                        <option value="@branch.BranchId">@branch.BranchName</option>
+                                    }
+                                }
+                            </select>
+                            <span asp-validation-for="BranchId" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
                             <label asp-for="Subject" class="form-label">Subject <span class="text-danger">*</span></label>
                             <input asp-for="Subject" class="form-control" placeholder="Enter subject">
                             <span asp-validation-for="Subject" class="text-danger"></span>

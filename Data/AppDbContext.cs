@@ -183,6 +183,12 @@ public class AppDbContext : DbContext
 
         // ContactMessage relationships
         builder.Entity<ContactMessage>()
+            .HasOne(cm => cm.Branch)
+            .WithMany()
+            .HasForeignKey(cm => cm.BranchId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<ContactMessage>()
             .HasOne(cm => cm.RepliedByUser)
             .WithMany()
             .HasForeignKey(cm => cm.RepliedByUserId)

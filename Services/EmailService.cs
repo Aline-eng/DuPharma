@@ -55,7 +55,7 @@ public class EmailService : IEmailService
                         <p style='margin: 0 0 10px 0;'><strong>Need further assistance?</strong></p>
                         <p style='margin: 0; opacity: 0.9;'>
                             📧 Email: info@dupharma.com<br>
-                            📞 Phone: +1 (555) 123-4567<br>
+                            📞 Phone: +250 789 252 719<br>
                             🏥 Visit us: 123 Medical Street, Health City
                         </p>
                         <p style='margin: 15px 0 0 0; font-size: 12px; opacity: 0.7;'>

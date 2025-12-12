@@ -21,19 +21,25 @@ public class ContactMessage
     
     [Required, MaxLength(2000)]
     public string Message { get; set; } = string.Empty;
-    
+
+    public bool IsRead { get; set; } = false;
+
     [MaxLength(2000)]
     public string? Reply { get; set; }
-    
+
     public bool IsReplied { get; set; } = false;
-    
+
     public DateTime CreatedAt { get; set; } = DateTime.Now;
-    
+
     public DateTime? RepliedAt { get; set; }
-    
+
     public int? RepliedByUserId { get; set; }
-    
+
     public User? RepliedByUser { get; set; }
+
+    public int? BranchId { get; set; }
+
+    public Branch? Branch { get; set; }
 }
 
 public class ContactFormViewModel
@@ -57,7 +63,10 @@ public class ContactFormViewModel
     [Required(ErrorMessage = "Message is required")]
     [MaxLength(2000)]
     public string Message { get; set; } = string.Empty;
-    
+
+    [Required(ErrorMessage = "Please select a branch")]
+    public int BranchId { get; set; }
+
     // Anti-bot field (should remain empty) - no validation attributes
     [System.ComponentModel.DataAnnotations.Schema.NotMapped]
     public string HoneyPot { get; set; } = string.Empty;

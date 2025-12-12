@@ -58,6 +58,7 @@
                             <tr>
                                 <th>Date</th>
                                 <th>From</th>
+                                <th>Branch</th>
                                 <th>Subject</th>
                                 <th>Status</th>
                                 <th>Actions</th>
@@ -70,6 +71,10 @@
                                     <td>
                                         <small class="text-muted">@message.CreatedAt.ToString("MMM dd, yyyy")</small><br>
                                         <small class="text-muted">@message.CreatedAt.ToString("HH:mm")</small>
+                                        @if (!message.IsRead)
+                                        {
+                                            <br><span class="badge bg-info"><i class="bi bi-envelope-fill"></i> Unread</span>
+                                        }
                                     </td>
                                     <td>
                                         <strong>@message.FullName</strong><br>
@@ -78,6 +83,9 @@
                                         {
                                             <br><small class="text-muted"><i class="bi bi-telephone"></i> @message.Phone</small>
                                         }
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary">@message.Branch.BranchName</span>
                                     </td>
                                     <td>
                                         <strong>@message.Subject</strong><br>
@@ -116,9 +124,12 @@
                                                     <i class="bi bi-reply"></i> Reply
                                                 </a>
                                             }
-                                            <a href="@Url.Action("Delete", new { id = message.Id })" class="btn btn-outline-danger btn-sm">
-                                                <i class="bi bi-trash"></i> Delete
-                                            </a>
+                                            @if (User.IsInRole("Admin"))
+                                            {
+                                                <a href="@Url.Action("Delete", new { id = message.Id })" class="btn btn-outline-danger btn-sm">
+                                                    <i class="bi bi-trash"></i> Delete
+                                                </a>
+                                            }
                                         </div>
                                     </td>
                                 </tr>
