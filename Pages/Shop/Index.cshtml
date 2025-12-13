@@ -47,6 +47,11 @@
         </button>
     </div>
 
+    <div id="loadingIndicator" class="page-loading" style="display:none;">
+        <div class="spinner"></div>
+        <p class="loading-text">Loading medicines...</p>
+    </div>
+
     <div class="row" id="medicineGrid">
         @if (!Model.Any())
         {
@@ -58,7 +63,7 @@
         }
         @foreach (var medicine in Model)
         {
-            <div class="col-md-3 mb-4">
+            <div class="col-md-3 mb-4 fade-in">
                 <div class="card h-100">
                     <img src="@medicine.ImageUrl" class="card-img-top" alt="@medicine.BrandName">
                     <div class="card-body">
@@ -190,11 +195,26 @@ $('#liveSearch').on('input', function() {
             return;
         }
         
+        showLoading();
         $.get('/Shop/SearchLive', { q: query, branchId: branchId }, function(data) {
+            hideLoading();
             renderMedicines(data);
+        }).fail(function() {
+            hideLoading();
+            alert('Search failed. Please try again.');
         });
     }, 500);
 });
+
+function showLoading() {
+    $('#medicineGrid').hide();
+    $('#loadingIndicator').show();
+}
+
+function hideLoading() {
+    $('#loadingIndicator').hide();
+    $('#medicineGrid').show();
+}
 
 function performSearch() {
     const query = $('#liveSearch').val();
@@ -218,7 +238,7 @@ function renderMedicines(medicines) {
     let html = '';
     medicines.forEach(m => {
         html += `
-            <div class="col-md-3 mb-4">
+            <div class="col-md-3 mb-4 fade-in">
                 <div class="card h-100">
                     <img src="${m.imageUrl}" class="card-img-top" alt="${m.brandName}">
                     <div class="card-body">
@@ -318,6 +338,9 @@ function placeOrder() {
         return;
     }
     
+    const $btn = $('.modal-footer .btn-success');
+    $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status"></span> Placing order...');
+    
     const order = {
         customerName: $('#customerName').val(),
         customerEmail: $('#customerEmail').val(),
@@ -334,6 +357,7 @@ function placeOrder() {
     })
     .then(r => r.json())
     .then(data => {
+        $btn.prop('disabled', false).html('Place Order');
         if (data.success) {
             alert(`Order placed successfully! Order Number: ${data.orderNumber}`);
             cart = [];
@@ -344,6 +368,10 @@ function placeOrder() {
         } else {
             showCheckoutAlert(data.message || 'Some items are not available in the selected branch. Please choose another branch.');
         }
+    })
+    .catch(err => {
+        $btn.prop('disabled', false).html('Place Order');
+        showCheckoutAlert('Failed to place order. Please try again.');
     });
 }
 

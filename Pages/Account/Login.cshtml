@@ -50,7 +50,13 @@
                         </div>
                         
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary btn-login" >LOGIN</button>
+                            <button type="submit" class="btn btn-primary btn-login" id="loginBtn">
+                                <span id="loginBtnText">LOGIN</span>
+                                <span id="loginBtnSpinner" style="display:none;">
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    Logging in...
+                                </span>
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -67,5 +73,15 @@
             localStorage.removeItem('token');
         </script>
     }
+    <script>
+        $(document).ready(function() {
+            $('form').on('submit', function() {
+                var $btn = $('#loginBtn');
+                $btn.prop('disabled', true);
+                $('#loginBtnText').hide();
+                $('#loginBtnSpinner').show();
+            });
+        });
+    </script>
 </body>
 </html>

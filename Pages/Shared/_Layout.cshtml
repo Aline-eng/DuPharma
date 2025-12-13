@@ -8,6 +8,14 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
+    <!-- Global Page Loading Overlay -->
+    <div class="loading-overlay" id="pageLoader" style="display:none;">
+        <div class="spinner-container">
+            <div class="spinner"></div>
+            <p class="loading-text">Loading...</p>
+        </div>
+    </div>
+
     <div class="d-flex">
         <!-- Mobile Overlay -->
         <div class="mobile-overlay" id="mobileOverlay"></div>
@@ -120,6 +128,32 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        // Show loading on all navigation clicks
+        $(document).ready(function() {
+            // Show loader on all link clicks
+            $('a:not([target="_blank"]):not([href^="#"]):not([data-bs-toggle])').on('click', function(e) {
+                if ($(this).attr('href') && $(this).attr('href') !== 'javascript:void(0)') {
+                    $('#pageLoader').fadeIn(200);
+                }
+            });
+
+            // Show loader on form submissions
+            $('form:not([data-no-loader])').on('submit', function() {
+                $('#pageLoader').fadeIn(200);
+            });
+
+            // Hide loader when page loads
+            $(window).on('load', function() {
+                $('#pageLoader').fadeOut(300);
+            });
+
+            // Hide loader if page doesn't navigate (back button, etc)
+            setTimeout(function() {
+                $('#pageLoader').fadeOut(300);
+            }, 5000);
+        });
+    </script>
     @if (TempData["JwtToken"] != null)
     {
         <script>
