@@ -111,6 +111,8 @@ app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "DuPharma API v1");
     c.RoutePrefix = string.Empty; // Serve Swagger UI at root URL
+    c.DocumentTitle = "DuPharma API Documentation";
+    c.DefaultModelsExpandDepth(-1); // Hide schemas section by default
 });
 
 if (!app.Environment.IsDevelopment())
@@ -124,28 +126,38 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// Middleware to block non-API routes (API-only mode)
+app.Use(async (context, next) =>
+{
+    var path = context.Request.Path.Value?.ToLower() ?? "";
+    
+    // Allow Swagger UI and API routes only
+    if (path == "/" || 
+        path.StartsWith("/swagger") || 
+        path.StartsWith("/api/") ||
+        path.StartsWith("/_framework") ||
+        path.StartsWith("/_vs"))
+    {
+        await next();
+    }
+    else
+    {
+        // Block all other routes (Shop, Account, Home, etc.)
+        context.Response.StatusCode = 404;
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsJsonAsync(new 
+        { 
+            error = "Not Found",
+            message = "This is an API-only endpoint. Please use /api/* routes or visit the root for API documentation.",
+            documentation = "/"
+        });
+    }
+});
+
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Shop}/{action=Home}/{id?}");
-
-app.MapControllerRoute(
-    name: "staff",
-    pattern: "Home/{action=Index}/{id?}",
-    defaults: new { controller = "Home" });
-
-app.MapControllerRoute(
-    name: "shop",
-    pattern: "Shop/{action}/{id?}",
-    defaults: new { controller = "Shop", action = "Index" });
-
-app.MapControllerRoute(
-    name: "account",
-    pattern: "Account/{action=Login}/{id?}",
-    defaults: new { controller = "Account" });
-
+// Only map API routes (block web app routes)
 app.MapControllerRoute(
     name: "api",
     pattern: "api/{controller}/{action=Index}/{id?}");
