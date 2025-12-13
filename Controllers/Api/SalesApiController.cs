@@ -3,10 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using DuPharma.Data;
 using DuPharma.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace DuPharma.Controllers.Api;
 
-[Authorize]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 [ApiController]
 [Route("api/[controller]")]
 public class SalesApiController : ControllerBase
