@@ -51,6 +51,9 @@ public class AccountController : Controller
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, 
                     new ClaimsPrincipal(claimsIdentity), authProperties);
 
+                var token = _authService.GenerateJwtToken(user);
+                TempData["JwtToken"] = token;
+
                 return RedirectToLocal(returnUrl);
             }
             
@@ -64,6 +67,7 @@ public class AccountController : Controller
     public async Task<IActionResult> Logout()
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        TempData["ClearToken"] = true;
         return RedirectToAction(nameof(Login));
     }
 

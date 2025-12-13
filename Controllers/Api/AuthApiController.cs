@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using DuPharma.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace DuPharma.Controllers.Api;
 
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 [ApiController]
 [Route("api/[controller]")]
 public class AuthApiController : ControllerBase
@@ -14,34 +17,22 @@ public class AuthApiController : ControllerBase
         _authService = authService;
     }
 
-    [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginRequest request)
+    [HttpGet("me")]
+    public async Task<IActionResult> GetCurrentUser()
     {
-        var user = await _authService.AuthenticateAsync(request.Email, request.Password);
+        var userId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0");
         
-        if (user == null)
-            return Unauthorized(new { message = "Invalid credentials" });
-
-        var token = _authService.GenerateJwtToken(user);
+        if (userId == 0)
+            return Unauthorized();
 
         return Ok(new
         {
-            token,
-            user = new
-            {
-                user.UserId,
-                user.FullName,
-                user.Email,
-                role = _authService.GetRoleName(user.Role),
-                user.BranchId,
-                branchName = user.Branch?.BranchName
-            }
+            userId,
+            fullName = User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value,
+            email = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value,
+            role = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value,
+            branchId = User.FindFirst("BranchId")?.Value,
+            branchName = User.FindFirst("BranchName")?.Value
         });
     }
-}
-
-public class LoginRequest
-{
-    public string Email { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
 }

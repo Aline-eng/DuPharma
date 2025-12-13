@@ -35,7 +35,7 @@ public class AuthService
     public string GenerateJwtToken(User user)
     {
         var secret = _configuration["Jwt:Secret"]!;
-        var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var claims = new[]
