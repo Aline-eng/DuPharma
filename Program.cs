@@ -105,12 +105,15 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
+// Enable Swagger in all environments for API-only deployment
+app.UseSwagger();
+app.UseSwaggerUI(c => 
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DuPharma API v1"));
-}
-else
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "DuPharma API v1");
+    c.RoutePrefix = string.Empty; // Serve Swagger UI at root URL
+});
+
+if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
