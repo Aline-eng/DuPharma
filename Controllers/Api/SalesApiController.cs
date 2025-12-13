@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DuPharma.Data;
 using DuPharma.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DuPharma.Controllers.Api;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class SalesApiController : ControllerBase
