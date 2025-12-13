@@ -102,6 +102,9 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1020;
 }
 
 .user-info {
@@ -440,6 +443,9 @@
     background: linear-gradient(135deg, #0D182B 0%, #1B2940 100%);
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     padding: 15px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1030;
 }
 
 .shop-navbar .brand-text {
