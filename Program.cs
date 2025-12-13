@@ -9,6 +9,12 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Disable file watching in production (fixes Render deployment)
+builder.Configuration.Sources
+    .OfType<Microsoft.Extensions.Configuration.Json.JsonConfigurationSource>()
+    .ToList()
+    .ForEach(s => s.ReloadOnChange = false);
+
 // Add services to the container
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
