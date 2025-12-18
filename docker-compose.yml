@@ -1,0 +1,56 @@
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: dupharma_web:local
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      # Inject the connection string via environment variable so the app reads it at runtime
+      - ConnectionStrings__DefaultConnection=Server=db,1433;Database=dupharma_db;User Id=sa;Password=ChangeMe123!;TrustServerCertificate=True;
+    depends_on:
+      - db
+    # Wait-for-DB loop: wait until TCP port 1433 on service "db" accepts connections
+    command: >
+      bash -c "
+        echo 'Waiting for SQL Server at db:1433...';
+        for i in $(seq 1 60); do
+          (echo > /dev/tcp/db/1433) >/dev/null 2>&1 && { echo 'SQL Server reachable'; break; }
+          echo 'Waiting...' && sleep 2;
+        done;
+        echo 'Starting app';
+        exec dotnet DuPharma.dll
+      "
+    networks:
+      - dupharma_net
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: dupharma_sql
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=ChangeMe123!
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqldata:/var/opt/mssql
+    networks:
+      - dupharma_net
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P \"$SA_PASSWORD\" -Q \"SELECT 1\" >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+volumes:
+  sqldata:
+    driver: local
+
+networks:
+  dupharma_net:
+    driver: bridge

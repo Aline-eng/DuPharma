@@ -16,20 +16,23 @@ builder.Configuration.Sources
     .ForEach(s => s.ReloadOnChange = false);
 
 // Add services to the container
+// using Microsoft.EntityFrameworkCore;
+
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
+    // Reads "ConnectionStrings:DefaultConnection" - environment variable
+    // CONNECTIONSTRINGS__DEFAULTCONNECTION is already set by docker-compose
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    
-    // Override with environment variable if present (for production)
-    var envConnectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection");
-    if (!string.IsNullOrEmpty(envConnectionString))
+    options.UseSqlServer(connectionString, sqlOptions =>
     {
-        connectionString = envConnectionString;
-    }
-    
-    options.UseSqlServer(connectionString);
+        // Retry up to 5 times with exponential/backoff (default)
+        sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(10),
+            errorNumbersToAdd: null
+        );
+    });
 });
-
 
 var jwtSecret = builder.Configuration["Jwt:Secret"]!;
 var key = Encoding.UTF8.GetBytes(jwtSecret);
